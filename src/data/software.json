@@ -85,12 +85,29 @@
   ],
   "测试工具": [
     {
+      "name": "图吧",
+      "description": "电脑硬件性能检测工具合集",
+      "updatedAt": "2025-04-30",
+      "downloadUrl": "https://tbtool.luomashu.com/"
+    },
+    {
+      "name": "DiskGenius",
+      "description": "硬盘管理",
+      "updatedAt": "2025-04-30",
+      "downloadUrl": "https://www.diskgenius.cn/"
+    },
+    {
+      "name": "傲梅分区",
+      "description": "硬盘管理",
+      "updatedAt": "2025-03-30",
+      "downloadUrl": "https://www.disktool.cn/"
+    },
+    {
       "name": "CPU-Z",
       "description": "查看 CPU 和主板信息。",
       "updatedAt": "2025-04-30",
-      "downloadUrl": "https://example.com/cpuz.zip"
+      "downloadUrl": "https://www.cpuid.com/softwares/cpu-z.html"
     },
-    
   ],
     "代码命令": [
     {
