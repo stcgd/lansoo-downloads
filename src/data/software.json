@@ -11,19 +11,19 @@
       "description": "多系统启动 U 盘制作工具。",
       "updatedAt": "2025-07-01",
       "downloadUrl": "https://www.ventoy.net/cn/index.html"
-    }
+    },
     {
       "name": "Firpe",
       "description": "WINPE工具",
       "updatedAt": "2025-07-01",
       "downloadUrl": "https://firpe.cn/page-247"
-    }
+    },
     {
       "name": "Hotpe",
       "description": "纯净强大优雅PE工具",
       "updatedAt": "2025-07-01",
       "downloadUrl": "https://www.hotpe.top/"
-    }
+    },
     {
       "name": "WEPE",
       "description": "超好用PE工具",
@@ -46,6 +46,12 @@
     }
   ],
   "系统优化": [
+    {
+      "name": "Windows11轻松设置",
+      "description": "系统清理优化工具8888",
+      "updatedAt": "2025-07-15",
+      "downloadUrl": "https://www.123pan.com/s/1Zj8Vv-8bbcv.html"
+    },
     {
       "name": "CCleaner",
       "description": "系统清理优化工具。",
