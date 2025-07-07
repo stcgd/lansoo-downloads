@@ -41,6 +41,12 @@
       "description": "超好用PE工具",
       "updatedAt": "2025-07-01",
       "downloadUrl": "https://www.wepe.com.cn/"
+    },
+    {
+    "name": "Rufus",
+      "description": "轻量级系统启动盘制作工具"
+       "updatedAt": "2025-06-01",
+      "url": "https://rufus.ie/"
     }
   ],
   "日常软件": [
@@ -58,7 +64,7 @@
     },
     {
       "name": "edge 浏览器",
-      "description": "谷歌官方浏览器。",
+      "description": "标准官方浏览器",
       "updatedAt": "2025-06-10",
       "downloadUrl": "https://www.microsoft.com/zh-cn/edge/download?form=MA13FJ"
     },
@@ -122,5 +128,5 @@
       "updatedAt": "2025-04-30",
       "downloadUrl": "https://soft.4664456.xyz"
     }
-  ],
+  ]
 }
