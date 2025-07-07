@@ -43,10 +43,10 @@
       "downloadUrl": "https://www.wepe.com.cn/"
     },
     {
-    "name": "Rufus",
-      "description": "轻量级系统启动盘制作工具"
-       "updatedAt": "2025-06-01",
-      "url": "https://rufus.ie/"
+      "name": "Rufus",
+      "description": "轻量级系统启动盘制作工具",
+      "updatedAt": "2025-06-01",
+      "downloadUrl": "https://rufus.ie/"
     }
   ],
   "日常软件": [
@@ -63,8 +63,8 @@
       "downloadUrl": "https://www.jb51.net/softs/593707.html"
     },
     {
-      "name": "edge 浏览器",
-      "description": "标准官方浏览器",
+      "name": "Microsoft Edge 浏览器",
+      "description": "微软官方浏览器",
       "updatedAt": "2025-06-10",
       "downloadUrl": "https://www.microsoft.com/zh-cn/edge/download?form=MA13FJ"
     },
@@ -78,7 +78,7 @@
   "系统优化": [
     {
       "name": "Windows11轻松设置",
-      "description": "系统清理优化工具8888",
+      "description": "系统清理优化工具。",
       "updatedAt": "2025-07-15",
       "downloadUrl": "https://www.123pan.com/s/1Zj8Vv-8bbcv.html"
     },
@@ -115,7 +115,7 @@
       "downloadUrl": "https://www.cpuid.com/softwares/cpu-z.html"
     }
   ],
-    "代码命令": [
+  "代码命令": [
     {
       "name": "Powershell",
       "description": "irm https://get.activated.win | iex",
