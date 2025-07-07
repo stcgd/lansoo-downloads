@@ -19,12 +19,6 @@
       "downloadUrl": "https://msdn.itellyou.cn/"
     },
     {
-      "name": "OFFICE TOOL PLUS",
-      "description": "OFFICE",
-      "updatedAt": "2025-07-10",
-      "downloadUrl": "https://otp.landian.vip/zh-cn/"
-    },
-    {
       "name": "Ventoy 启动盘工具",
       "description": "多系统启动 U 盘制作工具。",
       "updatedAt": "2025-07-01",
@@ -56,6 +50,12 @@
     }
   ],
   "日常软件": [
+     {
+      "name": "OFFICE TOOL PLUS",
+      "description": "OFFICE",
+      "updatedAt": "2025-07-10",
+      "downloadUrl": "https://otp.landian.vip/zh-cn/"
+    },
     {
       "name": "7-Zip 解压软件",
       "description": "免费开源的压缩软件。",
@@ -79,6 +79,12 @@
       "description": "系统防护",
       "updatedAt": "2025-06-10",
       "downloadUrl": "https://guanjia.qq.com/"
+    },
+    {
+      "name": "电脑管家OLD",
+      "description": "系统防护2017",
+      "updatedAt": "2024-08-10",
+      "downloadUrl": "https://pc.qq.com/detail/19/detail_25639.html"
     }
   ],
   "系统优化": [
