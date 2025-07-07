@@ -7,6 +7,18 @@
       "downloadUrl": "https://www.microsoft.com/zh-cn/software-download/windows10"
     },
     {
+      "name": "Win11 微软镜像",
+      "description": "微软官方原版 ISO 镜像。",
+      "updatedAt": "2025-07-10",
+      "downloadUrl": "https://www.microsoft.com/zh-cn/software-download/windows11"
+    },
+    {
+      "name": "MSDN",
+      "description": "微软 ISO 镜像。",
+      "updatedAt": "2025-07-10",
+      "downloadUrl": "https://msdn.itellyou.cn/"
+    },
+    {
       "name": "Ventoy 启动盘工具",
       "description": "多系统启动 U 盘制作工具。",
       "updatedAt": "2025-07-01",
@@ -36,13 +48,25 @@
       "name": "7-Zip 解压软件",
       "description": "免费开源的压缩软件。",
       "updatedAt": "2025-01-20",
-      "downloadUrl": "https://example.com/7zip.exe"
+      "downloadUrl": "https://www.7-zip.org/"
     },
     {
-      "name": "Chrome 浏览器",
+      "name": "Winrar解压软件",
+      "description": "全球老牌经典解压缩软件",
+      "updatedAt": "2025-01-20",
+      "downloadUrl": "https://www.jb51.net/softs/593707.html"
+    },
+    {
+      "name": "edge 浏览器",
       "description": "谷歌官方浏览器。",
       "updatedAt": "2025-06-10",
-      "downloadUrl": "https://example.com/chrome.exe"
+      "downloadUrl": "https://www.microsoft.com/zh-cn/edge/download?form=MA13FJ"
+    },
+    {
+      "name": "电脑管家NEW",
+      "description": "系统防护",
+      "updatedAt": "2025-06-10",
+      "downloadUrl": "https://guanjia.qq.com/"
     }
   ],
   "系统优化": [
@@ -65,6 +89,21 @@
       "description": "查看 CPU 和主板信息。",
       "updatedAt": "2025-04-30",
       "downloadUrl": "https://example.com/cpuz.zip"
-    }
+    },
+    
+  ],
+    "代码命令": [
+    {
+      "name": "Powershell",
+      "description": "irm https://get.activated.win | iex",
+      "updatedAt": "2025-04-30",
+      "downloadUrl": "soft.4664456.xyz"
+    },
+     {
+      "name": "卓越性能-power",
+      "description": "powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61",
+      "updatedAt": "2025-04-30",
+      "downloadUrl": "soft.4664456.xyz"
+    },
   ]
 }
