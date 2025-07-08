@@ -1,128 +1,181 @@
-body {
-  font-family: 'Segoe UI', sans-serif;
+/* 全局基础样式 */
+body, html {
   margin: 0;
   padding: 0;
-  background: #f4f6fb;
-  color: #333;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
+  transition: background-color 0.3s, color 0.3s;
 }
 
+/* 容器 */
 .container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 2rem 1rem;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
 }
 
+/* 顶部区域 */
 .header {
   text-align: center;
   margin-bottom: 2rem;
 }
 
 .header h1 {
-  font-size: 2.5rem;
-  color: #003366;
-  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  margin-bottom: 0.3rem;
 }
 
 .header p {
-  font-size: 1rem;
-  color: #555;
+  color: #666;
+  margin-bottom: 1rem;
 }
 
+.dark-toggle {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* 搜索区域 */
 .search-section {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  margin-bottom: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
 .search-input {
-  width: 100%;
-  padding: 0.8rem 1rem;
+  width: 80%;
+  max-width: 500px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
   font-size: 1rem;
   margin-bottom: 1rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
 }
 
 .category-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  margin-top: 10px;
 }
 
 .filter-btn {
-  background: #eee;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.95rem;
+  padding: 6px 12px;
+  margin: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  color: #333;
   cursor: pointer;
-  transition: all 0.2s;
-}
-
-.filter-btn:hover {
-  background: #d0e6ff;
 }
 
 .filter-btn.active {
-  background: #007bff;
+  background-color: #007bff;
   color: white;
+  border-color: #007bff;
 }
 
-.category {
-  margin: 2rem 0;
-}
-
+/* 分类标题 */
 .category h2 {
-  font-size: 1.5rem;
-  border-left: 4px solid #007bff;
-  padding-left: 0.75rem;
-  margin-bottom: 1rem;
-  color: #007bff;
+  margin-top: 2rem;
+  font-size: 1.3rem;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.3rem;
+  color: #333;
 }
 
+/* 软件卡片 */
 .software-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
-.card {
-  background: white;
-  padding: 1rem 1.25rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-}
-
-.card h3 {
-  margin: 0 0 0.5rem 0;
-  color: #222;
-  font-size: 1.2rem;
-}
-
-.card p {
-  margin: 0.25rem 0;
-  font-size: 0.95rem;
-}
-
-.download {
-  margin-top: 0.75rem;
-  display: inline-block;
-  background: #007bff;
-  color: white;
-  padding: 0.4rem 0.9rem;
+.software-card {
+  border: 1px solid #ddd;
   border-radius: 6px;
-  text-decoration: none;
-  font-size: 0.95rem;
+  padding: 1rem;
+  background-color: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s;
 }
 
-.download:hover {
-  background: #0056b3;
+.software-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.software-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.software-card p {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.download-link {
+  display: inline-block;
+  margin-top: 0.3rem;
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.download-link:hover {
+  text-decoration: underline;
+}
+
+/* ====== 夜间模式样式 ====== */
+.container.dark {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.container.dark .header {
+  background-color: transparent;
+  color: #ffffff;
+}
+
+.container.dark .search-input {
+  background-color: #2c2c2c;
+  color: #ffffff;
+  border: 1px solid #444;
+}
+
+.container.dark .filter-btn {
+  background-color: #333;
+  color: #ccc;
+  border-color: #444;
+}
+
+.container.dark .filter-btn.active {
+  background-color: #555;
+  color: #fff;
+}
+
+.container.dark .software-card {
+  background-color: #1f1f1f;
+  border-color: #333;
+  color: #e0e0e0;
+}
+
+.container.dark .download-link {
+  color: #66b2ff;
+}
+
+.container.dark .dark-toggle {
+  background-color: #444;
+  color: #fff;
+}
+
+/* 响应式调整 */
+@media (max-width: 600px) {
+  .search-input {
+    width: 95%;
+  }
 }
