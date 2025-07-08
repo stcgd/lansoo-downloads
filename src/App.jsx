@@ -21,7 +21,7 @@ const App = () => {
     <div className="container">
       <header className="header">
         <h1>软件下载导航</h1>
-        <p>快捷获取常用软件安装包</p>
+        <p>快捷获取常用软件安装包@Sunway 远程技术支持wechat：qq2269404909</p>
       </header>
 
       <div className="search-section">
