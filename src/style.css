@@ -152,3 +152,19 @@ body {
 }
 
 .card:hover {
+/* 更新时间样式 */
+.update-time {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 0.25rem;
+}
+
+/* 夜间模式按钮颜色优化（可选） */
+.dark .download {
+  background: #3399ff;
+}
+
+.dark .download:hover {
+  background: #2277cc;
+}
+
