@@ -5,7 +5,7 @@ const SoftwareCard = ({ software }) => {
     <div className="card">
       <h3>{software.name}</h3>
       <p>{software.description}</p>
-      <p>更新时间：{software.updatedAt}</p>
+      <p className="update-time">更新时间：{software.updatedAt}</p>
       <a className="download" href={software.downloadUrl} target="_blank" rel="noopener noreferrer">
         下载
       </a>
