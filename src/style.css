@@ -1,4 +1,3 @@
-/* 默认（浅色模式） */
 body {
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
@@ -13,44 +12,6 @@ body {
   padding: 2rem 1rem;
 }
 
-/* 夜间模式覆盖 */
-.dark body,
-.dark {
-  background: #1e1e1e;
-  color: #eee;
-}
-
-.dark .search-section,
-.dark .card {
-  background: #2a2a2a;
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
-}
-
-.dark .search-input {
-  background: #1e1e1e;
-  color: #eee;
-  border: 1px solid #555;
-}
-
-.dark .filter-btn {
-  background: #444;
-  color: #ccc;
-}
-
-.dark .filter-btn.active {
-  background: #4da3ff;
-  color: #fff;
-}
-
-.dark .download {
-  background: #4da3ff;
-}
-
-.dark .download:hover {
-  background: #1e90ff;
-}
-
-/* header */
 .header {
   text-align: center;
   margin-bottom: 2rem;
@@ -62,20 +23,11 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.dark .header h1 {
-  color: #7ab6ff;
-}
-
 .header p {
   font-size: 1rem;
   color: #555;
 }
 
-.dark .header p {
-  color: #bbb;
-}
-
-/* search area */
 .search-section {
   background: white;
   border-radius: 12px;
@@ -118,7 +70,6 @@ body {
   color: white;
 }
 
-/* categories */
 .category {
   margin: 2rem 0;
 }
@@ -131,12 +82,6 @@ body {
   color: #007bff;
 }
 
-.dark .category h2 {
-  color: #4da3ff;
-  border-left-color: #4da3ff;
-}
-
-/* card list */
 .software-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -152,19 +97,32 @@ body {
 }
 
 .card:hover {
-/* 更新时间样式 */
-.update-time {
-  font-size: 0.85rem;
-  color: #888;
-  margin-top: 0.25rem;
+  transform: translateY(-4px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
-/* 夜间模式按钮颜色优化（可选） */
-.dark .download {
-  background: #3399ff;
+.card h3 {
+  margin: 0 0 0.5rem 0;
+  color: #222;
+  font-size: 1.2rem;
 }
 
-.dark .download:hover {
-  background: #2277cc;
+.card p {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
 }
 
+.download {
+  margin-top: 0.75rem;
+  display: inline-block;
+  background: #007bff;
+  color: white;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.download:hover {
+  background: #0056b3;
+}
