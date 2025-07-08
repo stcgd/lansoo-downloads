@@ -1,27 +1,56 @@
-/* 全局设置 */
-body, html {
+/* 默认（浅色模式） */
+body {
+  font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
-  font-family: 'Helvetica Neue', 'Arial', sans-serif;
-  background-color: #f4f6fa;
-  color: #1f1f1f;
+  background: #f4f6fb;
+  color: #333;
 }
 
-/* 容器样式 */
 .container {
-  padding: 2rem;
-  max-width: 1200px;
+  max-width: 1100px;
   margin: auto;
-  transition: background-color 0.3s, color 0.3s;
+  padding: 2rem 1rem;
 }
 
-/* 夜间模式样式 */
-.container.dark {
-  background-color: #1e1e1e;
-  color: #f0f0f0;
+/* 夜间模式覆盖 */
+.dark body,
+.dark {
+  background: #1e1e1e;
+  color: #eee;
 }
 
-/* 标题和描述 */
+.dark .search-section,
+.dark .card {
+  background: #2a2a2a;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+}
+
+.dark .search-input {
+  background: #1e1e1e;
+  color: #eee;
+  border: 1px solid #555;
+}
+
+.dark .filter-btn {
+  background: #444;
+  color: #ccc;
+}
+
+.dark .filter-btn.active {
+  background: #4da3ff;
+  color: #fff;
+}
+
+.dark .download {
+  background: #4da3ff;
+}
+
+.dark .download:hover {
+  background: #1e90ff;
+}
+
+/* header */
 .header {
   text-align: center;
   margin-bottom: 2rem;
@@ -29,42 +58,97 @@ body, html {
 
 .header h1 {
   font-size: 2.5rem;
-  color: #0a2f6b;
+  color: #003366;
+  margin-bottom: 0.5rem;
 }
 
-.container.dark .header h1 {
-  color: #66aaff;
+.dark .header h1 {
+  color: #7ab6ff;
 }
 
 .header p {
-  margin: 0.5rem 0 1rem;
   font-size: 1rem;
   color: #555;
 }
 
-.container.dark .header p {
-  color: #ccc;
+.dark .header p {
+  color: #bbb;
 }
 
-/* 夜间/白天切换按钮 */
-.dark-toggle {
-  padding: 0.5rem 1rem;
-  background-color: #fffbe6;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 1rem;
-  transition: background-color 0.3s;
-}
-
-.container.dark .dark-toggle {
-  background-color: #444;
-  color: #eee;
-}
-
-/* 搜索区域 */
+/* search area */
 .search-section {
-  background-color: #fff;
-  padding: 1rem;
-  bo
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.category-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-btn {
+  background: #eee;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-btn:hover {
+  background: #d0e6ff;
+}
+
+.filter-btn.active {
+  background: #007bff;
+  color: white;
+}
+
+/* categories */
+.category {
+  margin: 2rem 0;
+}
+
+.category h2 {
+  font-size: 1.5rem;
+  border-left: 4px solid #007bff;
+  padding-left: 0.75rem;
+  margin-bottom: 1rem;
+  color: #007bff;
+}
+
+.dark .category h2 {
+  color: #4da3ff;
+  border-left-color: #4da3ff;
+}
+
+/* card list */
+.software-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background: white;
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
