@@ -1,181 +1,70 @@
-/* 全局基础样式 */
+/* 全局设置 */
 body, html {
   margin: 0;
   padding: 0;
-  font-family: "Segoe UI", Roboto, sans-serif;
-  background-color: #f8f9fa;
-  color: #212529;
+  font-family: 'Helvetica Neue', 'Arial', sans-serif;
+  background-color: #f4f6fa;
+  color: #1f1f1f;
+}
+
+/* 容器样式 */
+.container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
   transition: background-color 0.3s, color 0.3s;
 }
 
-/* 容器 */
-.container {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 1rem;
+/* 夜间模式样式 */
+.container.dark {
+  background-color: #1e1e1e;
+  color: #f0f0f0;
 }
 
-/* 顶部区域 */
+/* 标题和描述 */
 .header {
   text-align: center;
   margin-bottom: 2rem;
 }
 
 .header h1 {
-  font-size: 2rem;
-  margin-bottom: 0.3rem;
+  font-size: 2.5rem;
+  color: #0a2f6b;
+}
+
+.container.dark .header h1 {
+  color: #66aaff;
 }
 
 .header p {
-  color: #666;
-  margin-bottom: 1rem;
-}
-
-.dark-toggle {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  font-size: 0.9rem;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-/* 搜索区域 */
-.search-section {
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-.search-input {
-  width: 80%;
-  max-width: 500px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  margin: 0.5rem 0 1rem;
   font-size: 1rem;
-  margin-bottom: 1rem;
-}
-
-.category-filters {
-  margin-top: 10px;
-}
-
-.filter-btn {
-  padding: 6px 12px;
-  margin: 4px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-  color: #333;
-  cursor: pointer;
-}
-
-.filter-btn.active {
-  background-color: #007bff;
-  color: white;
-  border-color: #007bff;
-}
-
-/* 分类标题 */
-.category h2 {
-  margin-top: 2rem;
-  font-size: 1.3rem;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 0.3rem;
-  color: #333;
-}
-
-/* 软件卡片 */
-.software-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.software-card {
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 1rem;
-  background-color: white;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.2s;
-}
-
-.software-card:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.software-card h3 {
-  margin: 0 0 0.5rem;
-  font-size: 1.1rem;
-}
-
-.software-card p {
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
   color: #555;
 }
 
-.download-link {
-  display: inline-block;
-  margin-top: 0.3rem;
-  color: #007bff;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.download-link:hover {
-  text-decoration: underline;
-}
-
-/* ====== 夜间模式样式 ====== */
-.container.dark {
-  background-color: #121212;
-  color: #e0e0e0;
-}
-
-.container.dark .header {
-  background-color: transparent;
-  color: #ffffff;
-}
-
-.container.dark .search-input {
-  background-color: #2c2c2c;
-  color: #ffffff;
-  border: 1px solid #444;
-}
-
-.container.dark .filter-btn {
-  background-color: #333;
+.container.dark .header p {
   color: #ccc;
-  border-color: #444;
 }
 
-.container.dark .filter-btn.active {
-  background-color: #555;
-  color: #fff;
-}
-
-.container.dark .software-card {
-  background-color: #1f1f1f;
-  border-color: #333;
-  color: #e0e0e0;
-}
-
-.container.dark .download-link {
-  color: #66b2ff;
+/* 夜间/白天切换按钮 */
+.dark-toggle {
+  padding: 0.5rem 1rem;
+  background-color: #fffbe6;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.3s;
 }
 
 .container.dark .dark-toggle {
   background-color: #444;
-  color: #fff;
+  color: #eee;
 }
 
-/* 响应式调整 */
-@media (max-width: 600px) {
-  .search-input {
-    width: 95%;
-  }
-}
+/* 搜索区域 */
+.search-section {
+  background-color: #fff;
+  padding: 1rem;
+  bo
