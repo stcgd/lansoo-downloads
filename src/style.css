@@ -1,7 +1,6 @@
 /* Apply box-sizing: border-box globally for easier layout management */
 html {
     box-sizing: border-box;
-    height: 100%; /* 确保html占据全部高度 */
 }
 *, *::before, *::after {
     box-sizing: inherit; /* All elements inherit border-box behavior */
@@ -11,24 +10,14 @@ body {
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
     padding: 0;
-    background: #f4f6fb; /* 亮色模式的默认背景色 */
-    color: #333; /* 亮色模式的默认文字颜色 */
-    height: 100%; /* 确保body占据全部高度 */
-    transition: background-color 0.3s ease, color 0.3s ease; /* 添加背景和文字颜色过渡 */
-}
-
-/* 黑夜模式下body的全局样式 - 解决白边问题 */
-body.dark {
-    background-color: #1a1a1a; /* 全局深色背景 */
-    color: #eee; /* 全局亮色文字 */
+    background: #f4f6fb;
+    color: #333;
 }
 
 .container {
     max-width: 1100px;
     margin: auto;
-    padding: 2rem 1rem; /* 为容器内容提供内边距 */
-    /* 注意：container本身不需要背景色，让body的背景色透上来，
-             或者如果需要，在.container.dark中再设置其背景色 */
+    padding: 2rem 1rem; /* This provides padding for the overall content */
 }
 
 .header {
@@ -38,81 +27,54 @@ body.dark {
 
 .header h1 {
     font-size: 2.5rem;
-    color: #003366; /* 亮色模式颜色 */
+    color: #003366;
     margin-bottom: 0.5rem;
-    transition: color 0.3s ease; /* 添加颜色过渡 */
-}
-/* 暗黑模式下header h1的颜色 */
-body.dark .header h1 {
-    color: #66b3ff;
 }
 
 .header p {
     font-size: 1rem;
-    color: #555; /* 亮色模式颜色 */
-    transition: color 0.3s ease; /* 添加颜色过渡 */
-}
-/* 暗黑模式下header p的颜色 */
-body.dark .header p {
-    color: #bbb;
+    color: #555;
 }
 
 .search-section {
-    background: white; /* 亮色模式背景 */
+    background: white;
     border-radius: 12px;
-    padding: 1.5rem;
+    padding: 1.5rem; /* This padding is applied correctly due to box-sizing */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     margin-bottom: 2rem;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* 添加背景和阴影过渡 */
-}
-/* 暗黑模式下搜索部分的背景和阴影 */
-body.dark .search-section {
-    background: #2a2a2a;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    /* No need for specific width or display:flex here unless you want search-input
+       and category-filters to be side-by-side.
+       Given the current structure (input then filters below),
+       default block behavior for input + flex for categories works well. */
 }
 
 .search-input {
-    width: 100%; /* 100% 宽度，因box-sizing: border-box; 而不会溢出 */
+    width: 100%; /* Now this 100% correctly accounts for its own padding and border */
     padding: 0.8rem 1rem;
     font-size: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1rem; /* Space between input and categories */
     border-radius: 8px;
-    border: 1px solid #ccc; /* 亮色模式边框 */
-    background-color: white; /* 亮色模式背景 */
-    color: #333; /* 亮色模式文字 */
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; /* 添加过渡 */
+    border: 1px solid #ccc;
+    /* box-sizing: border-box;  Explicitly adding here is redundant if global rule is used,
+                                but doesn't hurt and serves as a reminder. */
 }
-.search-input::placeholder {
-    color: #aaa; /* 亮色模式 placeholder 颜色 */
-}
-/* 暗黑模式下搜索输入框的样式 */
-body.dark .search-input {
-    background-color: #3b3b3b;
-    border-color: #555;
-    color: #eee;
-}
-body.dark .search-input::placeholder {
-    color: #bbb;
-}
-
 
 .category-filters {
     display: flex;
-    flex-wrap: wrap; /* 按钮自动换行 */
-    gap: 0.5rem; /* 按钮之间间距 */
+    flex-wrap: wrap; /* This correctly wraps the buttons to the next line */
+    gap: 0.5rem; /* Space between buttons */
 }
 
 .filter-btn {
-    background: #eee; /* 亮色模式背景 */
+    background: #eee;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 20px;
     font-size: 0.95rem;
     cursor: pointer;
-    transition: all 0.2s; /* 添加所有属性的过渡 */
-    white-space: nowrap; /* 防止按钮文字换行 */
-    flex-shrink: 0; /* 防止按钮缩小，优先换行 */
-    color: #333; /* 亮色模式文字 */
+    transition: all 0.2s;
+    white-space: nowrap; /* Prevents text inside buttons from wrapping */
+    flex-shrink: 0; /* Prevents buttons from shrinking if space is tight, encourages wrapping */
 }
 
 .filter-btn:hover {
@@ -123,18 +85,6 @@ body.dark .search-input::placeholder {
     background: #007bff;
     color: white;
 }
-/* 暗黑模式下分类按钮的样式 */
-body.dark .filter-btn {
-    background: #4a4a4a;
-    color: #eee;
-}
-body.dark .filter-btn:hover {
-    background: #5a5a5a;
-}
-body.dark .filter-btn.active {
-    background: #0056b3;
-    color: white;
-}
 
 .category {
     margin: 2rem 0;
@@ -142,16 +92,10 @@ body.dark .filter-btn.active {
 
 .category h2 {
     font-size: 1.5rem;
-    border-left: 4px solid #007bff; /* 亮色模式颜色 */
+    border-left: 4px solid #007bff;
     padding-left: 0.75rem;
     margin-bottom: 1rem;
-    color: #007bff; /* 亮色模式颜色 */
-    transition: color 0.3s ease, border-color 0.3s ease; /* 添加颜色和边框颜色过渡 */
-}
-/* 暗黑模式下分类标题的样式 */
-body.dark .category h2 {
-    color: #66b3ff;
-    border-left-color: #66b3ff;
+    color: #007bff;
 }
 
 .software-list {
@@ -161,113 +105,119 @@ body.dark .category h2 {
 }
 
 .card {
-    background: white; /* 亮色模式背景 */
+    background: white;
     padding: 1rem 1.25rem;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease; /* 添加过渡 */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
     transform: translateY(-4px);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
-/* 暗黑模式下卡片的样式 */
-body.dark .card {
-    background: #333;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
 
 .card h3 {
     margin: 0 0 0.5rem 0;
-    color: #222; /* 亮色模式文字 */
+    color: #222;
     font-size: 1.2rem;
-    transition: color 0.3s ease; /* 添加颜色过渡 */
-}
-/* 暗黑模式下卡片标题的颜色 */
-body.dark .card h3 {
-    color: #eee;
 }
 
 .card p {
     margin: 0.25rem 0;
     font-size: 0.95rem;
-    color: #555; /* 亮色模式文字 */
-    transition: color 0.3s ease; /* 添加颜色过渡 */
-}
-/* 暗黑模式下卡片描述文字的颜色 */
-body.dark .card p {
-    color: #ccc;
 }
 
 .download {
     margin-top: 0.75rem;
     display: inline-block;
-    background: #007bff; /* 亮色模式背景 */
+    background: #007bff;
     color: white;
     padding: 0.4rem 0.9rem;
     border-radius: 6px;
     text-decoration: none;
     font-size: 0.95rem;
-    transition: background-color 0.3s ease; /* 添加背景过渡 */
 }
 
 .download:hover {
     background: #0056b3;
 }
-/* 暗黑模式下下载按钮的样式 */
-body.dark .download {
-    background: #0056b3;
-}
-body.dark .download:hover {
-    background: #003d80;
-}
-
 /* 更新时间样式 */
 .update-time {
     font-size: 0.85rem;
-    color: #888; /* 亮色模式颜色 */
+    color: #888;
     margin-top: 0.25rem;
-    transition: color 0.3s ease; /* 添加颜色过渡 */
-}
-/* 暗黑模式下更新时间文字的颜色 */
-body.dark .update-time {
-    color: #aaa;
 }
 
-/* 日夜模式切换按钮样式 */
-/* 你需要给切换按钮的 JSX 元素添加 className="dark-mode-toggle" */
-.dark-mode-toggle {
-    display: inline-flex; /* 让内容居中 */
-    align-items: center;
-    justify-content: center;
-    padding: 8px 15px;
-    border-radius: 20px;
-    border: 1px solid #ccc; /* 亮色模式边框 */
-    background-color: white; /* 亮色模式背景 */
-    color: #333; /* 亮色模式文字 */
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.3s ease; /* 添加所有属性的过渡 */
-    margin: 1rem auto 2rem auto; /* 居中并调整上下间距 */
-    display: block; /* 使得 margin: auto 生效 */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+/* Dark mode styles (add these or ensure they are present for dark mode functionality) */
+.container.dark {
+    background-color: #222; /* Darker background */
+    color: #eee; /* Lighter text */
 }
 
-.dark-mode-toggle .icon { /* 如果你的按钮内部有图标 */
-    margin-right: 5px;
+.container.dark .header h1 {
+    color: #66b3ff; /* Lighter blue for dark mode heading */
 }
 
-/* 暗黑模式下日夜模式切换按钮的样式 */
-body.dark .dark-mode-toggle {
-    background-color: #3b3b3b;
-    border-color: #555;
+.container.dark .header p {
+    color: #bbb;
+}
+
+.container.dark .search-section {
+    background: #333; /* Darker background for search section */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.container.dark .search-input {
+    background: #444; /* Darker background for input */
+    border-color: #666;
+    color: #eee; /* Lighter text in input */
+}
+
+.container.dark .search-input::placeholder {
+    color: #bbb;
+}
+
+.container.dark .filter-btn {
+    background: #555; /* Darker background for buttons */
     color: #eee;
 }
 
-.dark-mode-toggle:hover {
-    background-color: #e0e0e0;
+.container.dark .filter-btn:hover {
+    background: #666;
 }
-body.dark .dark-mode-toggle:hover {
-    background-color: #4a4a4a;
+
+.container.dark .filter-btn.active {
+    background: #0056b3; /* Darker active button in dark mode */
+    color: white;
+}
+
+.container.dark .category h2 {
+    color: #66b3ff; /* Lighter blue for category headings */
+    border-left-color: #66b3ff;
+}
+
+.container.dark .card {
+    background: #333; /* Darker background for cards */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.container.dark .card h3 {
+    color: #eee;
+}
+
+.container.dark .card p {
+    color: #ccc;
+}
+
+.container.dark .download {
+    background: #0056b3;
+}
+
+.container.dark .download:hover {
+    background: #003d80;
+}
+
+.container.dark .update-time {
+    color: #aaa;
 }
