@@ -118,6 +118,11 @@
       "updatedAt": "2025-06-19",
       "downloadUrl": "https://www.jb51.net/softs/872133.html"
     },
+    "name": "个人文件转移工具V2.0",
+      "description": "个人文件转移工具可以把“我的文档”、“桌面”等个人文件夹从C盘转移到D盘，一次使用，永久有效",
+      "updatedAt": "2025-06-19",
+      "downloadUrl": "https://www.123pan.com/s/jQg8Vv-klcAh.html"
+    },
     {
       "name": "CCleaner",
       "description": "系统清理优化工具。",
@@ -144,6 +149,11 @@
       "updatedAt": "2025-03-30",
       "downloadUrl": "https://www.disktool.cn/"
     },
+    "name": "键盘在线测试",
+      "description": "在线诊断键盘测试",
+      "updatedAt": "2025-07-07",
+      "downloadUrl": "https://key-test.com/cn/"
+    },
     {
       "name": "CPU-Z",
       "description": "查看 CPU 和主板信息。",
@@ -151,10 +161,48 @@
       "downloadUrl": "https://www.cpuid.com/softwares/cpu-z.html"
     }
   ],
+  "故障维护": [
+    {
+      "name": "R-Studio 9.5.191520 便携版 - 数据恢复",
+      "description": "数据恢复软件，专为从硬盘、闪存盘、内存卡以及其他存储设备中恢复丢失、损坏或被删除的文件而设计",
+      "updatedAt": "2025-06-30",
+      "downloadUrl": "https://www.osssr.com/3445.html"
+    },
+    {
+      "name": "EasyRecovery 16.0.0.8 安装版",
+      "description": "EasyRecovery 易恢复是由全球著名数据厂商Kroll Ontrack ® 出品的一款数据文件恢复软件，号称全球最好的数据恢复软件",
+      "updatedAt": "2025-04-30",
+      "downloadUrl": "https://www.osssr.com/761.html"
+    },
+    {
+      "name": "DISMTools 0.7 绿色版",
+      "description": "DISMTools 是一款专为 Windows 系统设计的工具，旨在简化和增强 DISM（Deployment Image Servicing and Management）命令的使用",
+      "updatedAt": "2025-04-30",
+      "downloadUrl": "https://www.osssr.com/17300.html"
+    },
+    {
+      "name": "Dism++ 10.1.1002.2 系统优化工具绿色版",
+      "description": "Dism++ 也许是最强的系统优化实用工具，号称全球第一款基于 CBS 的 Dism GUI 实现",
+      "updatedAt": "2025-04-30",
+      "downloadUrl": "https://www.osssr.com/435.html"
+    }
+  ],
   "代码命令": [
     {
       "name": "Powershell",
       "description": "irm https://get.activated.win | iex  irm https://massgrave.dev/get | iex",
+      "updatedAt": "2025-04-30",
+      "downloadUrl": "https://soft.4664456.xyz"
+    },
+    {
+      "name": "CMD",
+      "description": "netsh int ip reset | ipconfig /flushdns | cleanmgr /d C ",
+      "updatedAt": "2025-04-30",
+      "downloadUrl": "https://soft.4664456.xyz"
+    },
+    {
+      "name": "DISM",
+      "description": "DISM /Online /Cleanup-Image /CheckHealth ; DISM /Online /Cleanup-Image /ScanHealth ; DISM /Online /Cleanup-Image /RestoreHealth ",
       "updatedAt": "2025-04-30",
       "downloadUrl": "https://soft.4664456.xyz"
     },
