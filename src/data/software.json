@@ -151,6 +151,18 @@
       "downloadUrl": "https://www.disktool.cn/"
     },
     {
+      "name": "CrystalDiskInfo 9.7.0 绿色版",
+      "description": "硬盘驱动器（HDD）和固态硬盘（SSD）健康监控工具",
+      "updatedAt": "2025-03-30",
+      "downloadUrl": "https://www.osssr.com/452.html"
+    },
+    {
+      "name": "Memtest86 11.2.2000 专业版",
+      "description": "专业的内存测试工具，旨在帮助用户检测计算机内存（RAM）中的潜在问题",
+      "updatedAt": "2025-03-30",
+      "downloadUrl": "https://www.osssr.com/17490.html"
+    },
+    {
     "name": "键盘在线测试",
       "description": "在线诊断键盘测试",
       "updatedAt": "2025-07-07",
