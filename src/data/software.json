@@ -210,7 +210,7 @@
   "代码命令": [
     {
       "name": "Powershell",
-      "description": "irm https://get.activated.win | iex  irm https://massgrave.dev/get | iex",
+      "description": "irm https://get.activated.win | iex  *** irm https://massgrave.dev/get | iex",
       "updatedAt": "2025-04-30",
       "downloadUrl": "https://soft.4664456.xyz"
     },
