@@ -19,7 +19,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
       <form onSubmit={handleSubmit} className="p-8 bg-gray-800 rounded-lg shadow-xl flex flex-col items-center">
-        <h2 className="text-2xl mb-4 font-bold text-blue-400">输入密码访问</h2>
+        <h2 className="text-2xl mb-4 font-bold text-blue-400">密码！暗号？密钥>口令？</h2>
         <input
           type="password"
           value={password}
