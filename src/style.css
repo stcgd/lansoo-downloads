@@ -1,223 +1,278 @@
 /* Apply box-sizing: border-box globally for easier layout management */
 html {
-    box-sizing: border-box;
+box-sizing: border-box;
 }
-*, *::before, *::after {
-    box-sizing: inherit; /* All elements inherit border-box behavior */
+*, *::before, ::after {
+box-sizing: inherit; / All elements inherit border-box behavior */
 }
 
+/* General Body and Container Styles */
 body {
-    font-family: 'Segoe UI', sans-serif;
-    margin: 0;
-    padding: 0;
-    background: #f4f6fb;
-    color: #333;
+font-family: 'Segoe UI', sans-serif;
+margin: 0;
+padding: 0;
+background: #f4f6fb;
+color: #333;
+transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.dark {
+background: #121212;
+color: #eee;
 }
 
 .container {
-    max-width: 1100px;
-    margin: auto;
-    padding: 2rem 1rem; /* This provides padding for the overall content */
+max-width: 1100px;
+margin: auto;
+padding: 2rem 1rem;
 }
 
+/* Header Styles */
 .header {
-    text-align: center;
-    margin-bottom: 2rem;
+text-align: center;
+margin-bottom: 2rem;
 }
 
 .header h1 {
-    font-size: 2.5rem;
-    color: #003366;
-    margin-bottom: 0.5rem;
+font-size: 2.5rem;
+color: #003366;
+margin-bottom: 0.5rem;
+}
+
+body.dark .header h1 {
+color: #66b3ff;
 }
 
 .header p {
-    font-size: 1rem;
-    color: #555;
+font-size: 1rem;
+color: #555;
 }
 
+body.dark .header p {
+color: #bbb;
+}
+
+.dark-mode-toggle {
+position: absolute;
+top: 1rem;
+right: 1rem;
+background: none;
+border: none;
+font-size: 1.5rem;
+cursor: pointer;
+}
+
+/* Search and Filters */
 .search-section {
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem; /* This padding is applied correctly due to box-sizing */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    margin-bottom: 2rem;
-    /* No need for specific width or display:flex here unless you want search-input
-       and category-filters to be side-by-side.
-       Given the current structure (input then filters below),
-       default block behavior for input + flex for categories works well. */
+background: white;
+border-radius: 12px;
+padding: 1.5rem;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+margin-bottom: 2rem;
+transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark .search-section {
+background: #333;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .search-input {
-    width: 100%; /* Now this 100% correctly accounts for its own padding and border */
-    padding: 0.8rem 1rem;
-    font-size: 1rem;
-    margin-bottom: 1rem; /* Space between input and categories */
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    /* box-sizing: border-box;  Explicitly adding here is redundant if global rule is used,
-                                but doesn't hurt and serves as a reminder. */
+width: 100%;
+padding: 0.8rem 1rem;
+font-size: 1rem;
+margin-bottom: 1rem;
+border-radius: 8px;
+border: 1px solid #ccc;
+transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+body.dark .search-input {
+background: #444;
+border-color: #666;
+color: #eee;
+}
+
+.search-input::placeholder {
+color: #aaa;
+}
+
+body.dark .search-input::placeholder {
+color: #bbb;
 }
 
 .category-filters {
-    display: flex;
-    flex-wrap: wrap; /* This correctly wraps the buttons to the next line */
-    gap: 0.5rem; /* Space between buttons */
+display: flex;
+flex-wrap: wrap;
+gap: 0.5rem;
 }
 
 .filter-btn {
-    background: #eee;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap; /* Prevents text inside buttons from wrapping */
-    flex-shrink: 0; /* Prevents buttons from shrinking if space is tight, encourages wrapping */
+background: #eee;
+border: none;
+padding: 0.5rem 1rem;
+border-radius: 20px;
+font-size: 0.95rem;
+cursor: pointer;
+transition: all 0.2s;
+white-space: nowrap;
+flex-shrink: 0;
 }
 
 .filter-btn:hover {
-    background: #d0e6ff;
+background: #d0e6ff;
 }
 
 .filter-btn.active {
-    background: #007bff;
-    color: white;
+background: #007bff;
+color: white;
 }
 
+body.dark .filter-btn {
+background: #555;
+color: #eee;
+}
+
+body.dark .filter-btn:hover {
+background: #666;
+}
+
+body.dark .filter-btn.active {
+background: #0056b3;
+color: white;
+}
+
+/* Category and Software List */
 .category {
-    margin: 2rem 0;
+margin: 2rem 0;
 }
 
 .category h2 {
-    font-size: 1.5rem;
-    border-left: 4px solid #007bff;
-    padding-left: 0.75rem;
-    margin-bottom: 1rem;
-    color: #007bff;
+font-size: 1.5rem;
+border-left: 4px solid #007bff;
+padding-left: 0.75rem;
+margin-bottom: 1rem;
+color: #007bff;
+transition: color 0.3s ease, border-left-color 0.3s ease;
+}
+
+body.dark .category h2 {
+color: #66b3ff;
+border-left-color: #66b3ff;
 }
 
 .software-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+gap: 1.5rem;
 }
 
-.card {
-    background: white;
-    padding: 1rem 1.25rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+/* Software Card Styles */
+.software-card {
+background: white;
+padding: 1rem 1.25rem;
+border-radius: 10px;
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
 }
 
-.card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+.software-card:hover {
+transform: translateY(-4px);
+box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
-.card h3 {
-    margin: 0 0 0.5rem 0;
-    color: #222;
-    font-size: 1.2rem;
+body.dark .software-card {
+background: #333;
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-.card p {
-    margin: 0.25rem 0;
-    font-size: 0.95rem;
+.software-card-header {
+display: flex;
+align-items: center;
+margin-bottom: 0.75rem;
 }
 
-.download {
-    margin-top: 0.75rem;
-    display: inline-block;
-    background: #007bff;
-    color: white;
-    padding: 0.4rem 0.9rem;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 0.95rem;
+.software-card-header img {
+width: 48px;
+height: 48px;
+border-radius: 8px;
+margin-right: 1rem;
 }
 
-.download:hover {
-    background: #0056b3;
-}
-/* 更新时间样式 */
-.update-time {
-    font-size: 0.85rem;
-    color: #888;
-    margin-top: 0.25rem;
+.software-info h3 {
+margin: 0;
+color: #222;
+font-size: 1.2rem;
+transition: color 0.3s ease;
 }
 
-/* Dark mode styles (add these or ensure they are present for dark mode functionality) */
-.container.dark {
-    background-color: #222; /* Darker background */
-    color: #eee; /* Lighter text */
+body.dark .software-info h3 {
+color: #eee;
 }
 
-.container.dark .header h1 {
-    color: #66b3ff; /* Lighter blue for dark mode heading */
+.software-info p {
+margin: 0.25rem 0;
+font-size: 0.95rem;
+color: #555;
+transition: color 0.3s ease;
 }
 
-.container.dark .header p {
-    color: #bbb;
+body.dark .software-info p {
+color: #ccc;
 }
 
-.container.dark .search-section {
-    background: #333; /* Darker background for search section */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+.software-card .description {
+font-size: 0.95rem;
+line-height: 1.5;
+color: #555;
+margin-bottom: 1rem;
+transition: color 0.3s ease;
 }
 
-.container.dark .search-input {
-    background: #444; /* Darker background for input */
-    border-color: #666;
-    color: #eee; /* Lighter text in input */
+body.dark .software-card .description {
+color: #aaa;
 }
 
-.container.dark .search-input::placeholder {
-    color: #bbb;
+.software-card .download-btn {
+margin-top: 0.75rem;
+display: inline-block;
+background: #007bff;
+color: white;
+padding: 0.4rem 0.9rem;
+border-radius: 6px;
+text-decoration: none;
+font-size: 0.95rem;
+transition: background 0.2s ease;
 }
 
-.container.dark .filter-btn {
-    background: #555; /* Darker background for buttons */
-    color: #eee;
+.software-card .download-btn:hover {
+background: #0056b3;
 }
 
-.container.dark .filter-btn:hover {
-    background: #666;
+.software-card .update-date {
+font-size: 0.85rem;
+color: #888;
+margin-top: 0.25rem;
+text-align: right;
+transition: color 0.3s ease;
 }
 
-.container.dark .filter-btn.active {
-    background: #0056b3; /* Darker active button in dark mode */
-    color: white;
+body.dark .software-card .update-date {
+color: #aaa;
 }
 
-.container.dark .category h2 {
-    color: #66b3ff; /* Lighter blue for category headings */
-    border-left-color: #66b3ff;
+/* Footer Styles */
+.footer {
+text-align: center;
+padding: 2rem 1rem;
+margin-top: 2rem;
+border-top: 1px solid #e0e0e0;
+font-size: 0.9rem;
+color: #777;
+transition: color 0.3s ease, border-top-color 0.3s ease;
 }
 
-.container.dark .card {
-    background: #333; /* Darker background for cards */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.container.dark .card h3 {
-    color: #eee;
-}
-
-.container.dark .card p {
-    color: #ccc;
-}
-
-.container.dark .download {
-    background: #0056b3;
-}
-
-.container.dark .download:hover {
-    background: #003d80;
-}
-
-.container.dark .update-time {
-    color: #aaa;
+body.dark .footer {
+color: #bbb;
+border-top-color: #444;
 }
