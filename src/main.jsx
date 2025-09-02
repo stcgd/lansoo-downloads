@@ -1,16 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './style.css';
 
-// This is the component that shows the password input screen.
 const PasswordScreen = ({ onPasswordSubmit }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (password === 'sunway') { // REPLACE with your actual password
+    if (password === 'sunway') {
       onPasswordSubmit(true);
     } else {
       setError('密码错误，请重试。');
@@ -39,6 +38,34 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
     </div>
   );
 };
-//----
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+const Main = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 检查本地存储以持久化登录状态
+  useEffect(() => {
+    const isAuth = localStorage.getItem('isAuthenticated') === 'true';
+    setIsAuthenticated(isAuth);
+    setIsLoading(false);
+  }, []);
+
+  const handlePasswordSubmit = (status) => {
+    setIsAuthenticated(status);
+    if (status) {
+      localStorage.setItem('isAuthenticated', 'true');
+    }
+  };
+
+  if (isLoading) {
+    return <div className="loading-screen">加载中...</div>;
+  }
+
+  return isAuthenticated ? (
+    <App />
+  ) : (
+    <PasswordScreen onPasswordSubmit={handlePasswordSubmit} />
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Main />);
