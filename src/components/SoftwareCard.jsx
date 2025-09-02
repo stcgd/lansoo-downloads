@@ -42,7 +42,7 @@ const SoftwareCard = ({ software, query }) => {
       <p>{highlightText(software.description, query)}</p>
       <p className="update-time">更新时间：{software.updatedAt}</p>
       <a className="download" href={software.downloadUrl} target="_blank" rel="noopener noreferrer">
-        <DownloadIcon />获取
+        <DownloadIcon />
       </a>
     </div>
   );
