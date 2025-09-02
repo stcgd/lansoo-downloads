@@ -36,8 +36,9 @@ const App = () => {
   return (
     <div className={darkMode ? 'container dark' : 'container'}>
       <header className="header">
-        <h1>软件下载导航</h1>
-        <p>快捷获取常用软件安装包@Sunway 远程技术支持 4664456</p>
+        <h1>软件下载导航 </h1>
+        <p>||快捷获取常用软件安装包|Software download navigation
+|@Sunway 远程技术支持 4664456</p>
         <button className="dark-toggle" onClick={toggleDarkMode}>
           {darkMode ? '☀️ 白天模式' : '🌙 夜间模式'}
         </button>
