@@ -11,7 +11,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (password === 'your-secret-password') { // REPLACE with your actual password
+    if (password === 'sunway') { // REPLACE with your actual password
       onPasswordSubmit(true);
     } else {
       setError('密码错误，请重试。');
