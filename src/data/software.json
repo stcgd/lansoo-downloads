@@ -126,9 +126,15 @@
     },
     {
       "name": "CCleaner",
-      "description": "系统清理优化工具。",
+      "description": "系统清理优化工具",
       "updatedAt": "2025-05-15",
       "downloadUrl": "https://example.com/ccleaner.exe"
+    },
+   {
+      "name": "CCleaner",
+      "description": "ACE虚拟化环境检测修复工具V5.0",
+      "updatedAt": "2025-09-01",
+      "downloadUrl": "https://www.123865.com/s/jDqyTd-CEIpH"
     }
   ],
   "测试工具": [
