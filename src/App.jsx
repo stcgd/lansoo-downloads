@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import softwareData from './data/software.json';
 import SoftwareCard from './components/SoftwareCard';
@@ -13,12 +12,22 @@ const App = () => {
   const allCategories = ['全部', ...Object.keys(softwareData)];
 
   useEffect(() => {
+    // 自动根据系统时间设置日夜模式
     if (!isManualToggle) {
       const hour = new Date().getHours();
       const isNight = hour >= 18 || hour < 6;
       setDarkMode(isNight);
     }
   }, [isManualToggle]);
+
+  useEffect(() => {
+    // 根据 darkMode 状态为 body 标签添加或移除 'dark' 类
+    if (darkMode) {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }, [darkMode]);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -34,11 +43,12 @@ const App = () => {
   };
 
   return (
-    <div className={darkMode ? 'container dark' : 'container'}>
+    // 注意: 这里不再有条件渲染的 'dark' 类，因为它已经被应用到 body 上了
+    <div className="container">
       <header className="header">
         <h1>软件下载导航</h1>
         <p>快捷获取常用软件安装包@Sunway 远程技术支持 4664456</p>
-        <button className="dark-toggle" onClick={toggleDarkMode}>
+        <button className="dark-mode-toggle" onClick={toggleDarkMode}>
           {darkMode ? '☀️ 白天模式' : '🌙 夜间模式'}
         </button>
       </header>
@@ -79,6 +89,10 @@ const App = () => {
           </div>
         );
       })}
+
+      <footer className="footer">
+        <p>&copy; {new Date().getFullYear()} LanSoo Soft. All rights reserved.</p>
+      </footer>
     </div>
   );
 };
