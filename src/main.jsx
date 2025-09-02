@@ -19,7 +19,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
       <form onSubmit={handleSubmit} className="p-8 bg-gray-800 rounded-lg shadow-xl flex flex-col items-center">
-        <h2 className="text-2xl mb-4 font-bold text-blue-400">密码！暗号？密钥>口令？</h2>
+        <h2 className="text-2xl mb-4 font-bold text-blue-400">密码>暗号>密钥>口令!？</h2>
         <input
           type="password"
           value={password}
@@ -31,7 +31,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
           type="submit"
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          提交
+          登录
         </button>
         {error && <p className="mt-4 text-red-500">{error}</p>}
       </form>
