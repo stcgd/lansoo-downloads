@@ -1,9 +1,7 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import softwareData from './data/software.json';
 import SoftwareCard from './components/SoftwareCard';
 import './style.css';
-
 
 const App = () => {
   const [query, setQuery] = useState('');
@@ -34,12 +32,25 @@ const App = () => {
     );
   };
 
+  // 使用 useMemo 缓存过滤后的数据
+  const filteredData = useMemo(() => {
+    if (selectedCategory === '全部') {
+      const allSoftware = Object.values(softwareData).flat();
+      const filtered = allSoftware.filter(filterSoftware);
+      return { 全部: filtered };
+    } else {
+      const categorySoftwares = softwareData[selectedCategory] || [];
+      const filtered = categorySoftwares.filter(filterSoftware);
+      return { [selectedCategory]: filtered };
+    }
+  }, [query, selectedCategory]);
+
   return (
     <div className={darkMode ? 'container dark' : 'container'}>
       <header className="header">
-        <h1>软件下载导航 </h1>
+        <h1>软件下载导航</h1>
         <p>||快捷获取常用软件安装包|Software download navigation
-|@Sunway 远程技术支持 4664456</p>
+          |@Sunway 远程技术支持 4664456</p>
         <button className="dark-toggle" onClick={toggleDarkMode}>
           {darkMode ? '☀️ 白天模式' : '🌙 夜间模式'}
         </button>
@@ -65,16 +76,21 @@ const App = () => {
           ))}
         </div>
       </div>
+      
+      {/* 添加加载文本，以防filteredData为空 */}
+      {Object.values(filteredData).flat().length === 0 && (
+        <div className="no-results">
+          没有找到与“{query}”相关的软件，请尝试其他关键词。
+        </div>
+      )}
 
-      {Object.entries(softwareData).map(([category, softwares]) => {
-        if (selectedCategory !== '全部' && category !== selectedCategory) return null;
-        const filtered = softwares.filter(filterSoftware);
-        if (filtered.length === 0) return null;
+      {Object.entries(filteredData).map(([category, softwares]) => {
+        if (softwares.length === 0) return null;
         return (
           <div key={category} className="category">
             <h2>{category}</h2>
             <div className="software-list">
-              {filtered.map((s, idx) => (
+              {softwares.map((s, idx) => (
                 <SoftwareCard key={idx} software={s} query={query} />
               ))}
             </div>
