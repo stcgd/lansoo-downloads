@@ -231,6 +231,44 @@
       "downloadUrl": "https://www.osssr.com/435.html"
     }
   ],
+    "在线工具": [
+    {
+      "name": "ipV6测试",
+      "description": "IPv6 连接测试",
+      "updatedAt": "2025-09-05",
+      "downloadUrl": "https://ipv6ready.me/"
+    },
+    {
+      "name": "压缩解密",
+      "description": "找回你的档案忘记密码",
+      "updatedAt": "2025-09-03",
+      "downloadUrl": "https://scamalytics.com/"
+    },
+    {
+      "name": "测速A",
+      "description": "测试互联网速度",
+      "updatedAt": "2025-04-30",
+      "downloadUrl": "https://speedtestgo.com/zh/#speedtest"
+    },
+    {
+      "name": "测速B",
+      "description": "Dism++ 也许是最强的系统优化实用工具，号称全球第一款基于 CBS 的 Dism GUI 实现",
+      "updatedAt": "2025-04-30",
+      "downloadUrl": "https://m.speedtest.cn/"
+    },
+    {
+      "name": "测速C",
+      "description": "wai测速",
+      "updatedAt": "2025-04-30",
+      "downloadUrl": "https://fast.com/"
+    }，
+   {
+      "name": "ip查询",
+      "description": "查看自己的IP地址",
+      "updatedAt": "2025-04-30",
+      "downloadUrl": "https://www.sojson.com/myip/"
+    }
+  ],
   "代码命令": [
     {
       "name": "Powershell",
