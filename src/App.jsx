@@ -1,8 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import softwareData from './data/software.json';
 import SoftwareCard from './components/SoftwareCard';
+import BannerCarousel from './components/BannerCarousel'; // <-- 这一行是关键！
 import './style.css';
-import './carousel.css'; // 导入轮播图样式
+import './carousel.css'; 
 
 const App = () => {
   const [query, setQuery] = useState('');
@@ -33,7 +34,6 @@ const App = () => {
     );
   };
 
-  // 使用 useMemo 缓存过滤后的数据
   const filteredData = useMemo(() => {
     if (selectedCategory === '全部') {
       const allSoftware = Object.values(softwareData).flat();
@@ -57,8 +57,7 @@ const App = () => {
         </button>
       </header>
 
-      {/* 在这里添加轮播图组件 */}
-      <BannerCarousel />
+      <BannerCarousel /> {/* 现在可以正常使用了 */}
 
       <div className="search-section">
         <input
@@ -81,7 +80,6 @@ const App = () => {
         </div>
       </div>
       
-      {/* 添加加载文本，以防filteredData为空 */}
       {Object.values(filteredData).flat().length === 0 && (
         <div className="no-results">
           没有找到与“{query}”相关的软件，请尝试其他关键词。
