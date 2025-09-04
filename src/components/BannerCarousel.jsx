@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
+// 将图片URL改为你引用的站外链接
 const banners = [
-  { id: 1, url: '/banners/banner1.png', alt: '网站横幅1' },
-  { id: 2, url: '/banners/banner2.png', alt: '网站横幅2' },
-  { id: 3, url: '/banners/banner3.png', alt: '网站横幅3' }
+  { id: 1, url: 'https://img.lansoo.com/file/1756974582770_banner3.png', alt: 'Lansoo' },
+  { id: 2, url: 'https://img.lansoo.com/file/1756974575664_banner2.png', alt: 'Stie' },
+  { id: 3, url: 'https://img.lansoo.com/file/1756974574144_banner1.png', alt: 'Soft' }
 ];
 
 const BannerCarousel = () => {
