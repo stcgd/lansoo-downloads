@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import softwareData from './data/software.json';
 import SoftwareCard from './components/SoftwareCard';
 import './style.css';
+import './carousel.css'; // 导入轮播图样式
 
 const App = () => {
   const [query, setQuery] = useState('');
@@ -55,6 +56,9 @@ const App = () => {
           {darkMode ? '☀️ 白天模式' : '🌙 夜间模式'}
         </button>
       </header>
+
+      {/* 在这里添加轮播图组件 */}
+      <BannerCarousel />
 
       <div className="search-section">
         <input
