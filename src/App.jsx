@@ -78,7 +78,7 @@ const App = () => {
     <div className={darkMode ? "bg-gray-900 text-white min-h-screen font-sans" : "bg-gray-100 text-gray-900 min-h-screen font-sans"}>
       {/* 顶部导航 */}
       <div className="flex justify-between items-center p-4 max-w-6xl mx-auto">
-        <h1 className="text-xl font-bold">软件下载导航</h1>
+        <h1 className="text-xl font-bold">Software Downloads 在线技术支持@微信：qq2269404909</h1>
         <button
           onClick={toggleDarkMode}
           className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:scale-110 transition-transform"
@@ -155,7 +155,6 @@ const App = () => {
         ) : (
           Object.entries(filteredData).map(([category, softwares]) => (
             <div key={category} className="mb-6">
-              {/* 直接在 h2 上应用颜色类，确保在暗黑模式下显示为白色 */}
               <h2 className="text-2xl font-bold mb-4 border-b border-gray-300 dark:border-gray-600 pb-2 text-gray-900 dark:text-white">
                 {category}
               </h2>
@@ -181,7 +180,7 @@ const App = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <Download className="w-4 h-4" /> 下载
+                          <Download className="w-4 h-4" /> 
                         </a>
                     </div>
                   </div>
