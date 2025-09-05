@@ -155,8 +155,9 @@ const App = () => {
         ) : (
           Object.entries(filteredData).map(([category, softwares]) => (
             <div key={category} className="mb-6">
-              <h2 className="text-2xl font-bold mb-4 border-b border-gray-300 dark:border-gray-600 pb-2 text-gray-900 dark:text-white">
-                {category}
+              <h2 className="text-2xl font-bold mb-4 border-b border-gray-300 dark:border-gray-600 pb-2">
+                {/* 确保标题在暗黑模式下显示为白色 */}
+                <span className="text-gray-900 dark:text-white">{category}</span>
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {softwares.map((s, idx) => (
@@ -164,7 +165,6 @@ const App = () => {
                     key={idx}
                     className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md hover:shadow-xl transition-shadow"
                   >
-                    {/* 添加了在黑夜模式下的标题颜色 */}
                     <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">
                       {highlight(s.name, query)}
                     </h3>
@@ -181,7 +181,7 @@ const App = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <Download className="w-4 h-4" /> 
+                          <Download className="w-4 h-4" /> 下载
                         </a>
                     </div>
                   </div>
