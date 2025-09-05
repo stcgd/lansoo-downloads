@@ -282,6 +282,18 @@
       "updatedAt": "2025-04-30",
       "downloadUrl": "https://soft.4664456.xyz"
     },
+   {
+      "name": "允许脚本执行",
+      "description": "Set-ExecutionPolicy Unrestricted",
+      "updatedAt": "2025-04-30",
+      "downloadUrl": "https://soft.4664456.xyz"
+    },
+    {
+      "name": "内存压缩",
+      "description": "Get-MMAgent | Enable-MMAgent -MemoryCompression | Disable-MMAgent –MemoryCompression",
+      "updatedAt": "2025-09-30",
+      "downloadUrl": "https://soft.4664456.xyz"
+    },
     {
       "name": "DISM",
       "description": "DISM /Online /Cleanup-Image /CheckHealth ; DISM /Online /Cleanup-Image /ScanHealth ; DISM /Online /Cleanup-Image /RestoreHealth ",
