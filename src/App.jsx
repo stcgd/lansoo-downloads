@@ -1,106 +1,129 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import softwareData from './data/software.json';
-import SoftwareCard from './components/SoftwareCard';
-import BannerCarousel from './components/BannerCarousel'; // <-- 这一行是关键！
-import './style.css';
-import './carousel.css'; 
+import React, { useState, useEffect } from "react";
+import { Sun, Moon, Search, Download } from "lucide-react";
 
-const App = () => {
-  const [query, setQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('全部');
-  const [darkMode, setDarkMode] = useState(false);
-  const [isManualToggle, setIsManualToggle] = useState(false);
+// 轮播图：换成你之前代码里的外部地址
+const banners = [
+  { id: 1, img: "https://pic.imgdb.cn/item/66d14a9ed9c307b7e9c2141f.jpg" },
+  { id: 2, img: "https://pic.imgdb.cn/item/66d14aa4d9c307b7e9c21a30.jpg" },
+  { id: 3, img: "https://pic.imgdb.cn/item/66d14aa8d9c307b7e9c21eeb.jpg" },
+];
 
-  const allCategories = ['全部', ...Object.keys(softwareData)];
+// 软件数据
+const softwareData = [
+  { id: 1, name: "Design Tool", desc: "Comi scuwention droon", category: "Design" },
+  { id: 2, name: "Sottwe Name", desc: "Comi sie gamion gem", category: "Games" },
+  { id: 3, name: "Cilly Sotware", desc: "Comi scuciention enlom peore", category: "Productivity" },
+  { id: 4, name: "Cutre Sotwam", desc: "Comi scuiel tion tux", category: "Design" },
+  { id: 5, name: "Fottowation", desc: "Comi scietstation derm", category: "Productivity" },
+  { id: 6, name: "Colcr.Ham", desc: "Comi scuerastion dem", category: "Design" },
+];
 
+// 正则转义
+const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// 搜索高亮
+const highlight = (text, query) => {
+  if (!query) return text;
+  const regex = new RegExp(`(${escapeRegExp(query)})`, "gi");
+  const parts = text.split(regex);
+  return parts.map((part, i) =>
+    regex.test(part) ? <mark key={i}>{part}</mark> : part
+  );
+};
+
+export default function App() {
+  const [dark, setDark] = useState(false);
+  const [search, setSearch] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [currentBanner, setCurrentBanner] = useState(0);
+
+  // 自动轮播
   useEffect(() => {
-    if (!isManualToggle) {
-      const hour = new Date().getHours();
-      const isNight = hour >= 18 || hour < 6;
-      setDarkMode(isNight);
-    }
-  }, [isManualToggle]);
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    setIsManualToggle(true);
-  };
-
-  const filterSoftware = (software) => {
-    const lowerQuery = query.toLowerCase();
-    return (
-      software.name.toLowerCase().includes(lowerQuery) ||
-      software.description.toLowerCase().includes(lowerQuery)
+    const interval = setInterval(
+      () => setCurrentBanner((prev) => (prev + 1) % banners.length),
+      4000
     );
-  };
+    return () => clearInterval(interval);
+  }, []);
 
-  const filteredData = useMemo(() => {
-    if (selectedCategory === '全部') {
-      const allSoftware = Object.values(softwareData).flat();
-      const filtered = allSoftware.filter(filterSoftware);
-      return { 全部: filtered };
-    } else {
-      const categorySoftwares = softwareData[selectedCategory] || [];
-      const filtered = categorySoftwares.filter(filterSoftware);
-      return { [selectedCategory]: filtered };
-    }
-  }, [query, selectedCategory]);
+  // 过滤数据
+  const filtered = softwareData.filter(
+    (s) =>
+      (activeCategory === "All" || s.category === activeCategory) &&
+      (s.name.toLowerCase().includes(search.toLowerCase()) ||
+        s.desc.toLowerCase().includes(search.toLowerCase()))
+  );
 
   return (
-    <div className={darkMode ? 'container dark' : 'container'}>
-      <header className="header">
-        <h1>软件下载导航</h1>
-        <p>||快捷获取常用软件安装包|Software download navigation
-          |@Sunway 远程技术支持 4664456</p>
-        <button className="dark-toggle" onClick={toggleDarkMode}>
-          {darkMode ? '☀️ 白天模式' : '🌙 夜间模式'}
+    <div className={dark ? "dark" : ""}>
+      {/* 顶部 */}
+      <div className="flex justify-between items-center p-4 max-w-6xl mx-auto">
+        <h1 className="text-xl font-bold">Software Downloads</h1>
+        <button
+          onClick={() => setDark(!dark)}
+          className="p-2 rounded-full bg-gray-200 dark:bg-gray-700"
+        >
+          {dark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
         </button>
-      </header>
+      </div>
 
-      <BannerCarousel /> {/* 现在可以正常使用了 */}
-
-      <div className="search-section">
-        <input
-          className="search-input"
-          type="text"
-          placeholder="搜索软件名称或描述..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+      {/* 轮播 */}
+      <div className="max-w-6xl mx-auto px-4 mb-6">
+        <img
+          src={banners[currentBanner].img}
+          alt="banner"
+          className="rounded-2xl shadow-md w-full h-64 object-cover"
         />
-        <div className="category-filters">
-          {allCategories.map((cat) => (
+      </div>
+
+      {/* 搜索 + 分类 */}
+      <div className="max-w-6xl mx-auto px-4 mb-8">
+        <div className="flex items-center bg-white dark:bg-gray-800 rounded-xl shadow-md px-3 py-2 mb-4">
+          <Search className="w-5 h-5 text-gray-400 mr-2" />
+          <input
+            type="text"
+            placeholder="Search software..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-transparent outline-none"
+          />
+        </div>
+        <div className="flex gap-2">
+          {["All", "Design", "Games", "Productivity"].map((cat) => (
             <button
               key={cat}
-              className={`filter-btn ${selectedCategory === cat ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(cat)}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium ${
+                activeCategory === cat
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200"
+              }`}
             >
               {cat}
             </button>
           ))}
         </div>
       </div>
-      
-      {Object.values(filteredData).flat().length === 0 && (
-        <div className="no-results">
-          没有找到与“{query}”相关的软件，请尝试其他关键词。
-        </div>
-      )}
 
-      {Object.entries(filteredData).map(([category, softwares]) => {
-        if (softwares.length === 0) return null;
-        return (
-          <div key={category} className="category">
-            <h2>{category}</h2>
-            <div className="software-list">
-              {softwares.map((s, idx) => (
-                <SoftwareCard key={idx} software={s} query={query} />
-              ))}
-            </div>
+      {/* 软件卡片 */}
+      <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pb-10">
+        {filtered.map((s) => (
+          <div
+            key={s.id}
+            className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow hover:shadow-xl transition"
+          >
+            <h3 className="text-lg font-semibold mb-1">
+              {highlight(s.name, search)}
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+              {highlight(s.desc, search)}
+            </p>
+            <button className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+              <Download className="w-4 h-4" /> Download
+            </button>
           </div>
-        );
-      })}
+        ))}
+      </div>
     </div>
   );
-};
-
-export default App;
+}
