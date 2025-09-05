@@ -91,20 +91,17 @@ const App = () => {
 
       {/* 轮播图部分 */}
       <div className="max-w-6xl mx-auto px-4 mb-6">
-        <div className="relative w-full overflow-hidden rounded-2xl shadow-lg">
-          <div
-            className="flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${currentBanner * 100}%)` }}
-          >
-            {banners.map((banner) => (
-              <img
-                key={banner.id}
-                src={banner.img}
-                alt="banner"
-                className="w-full flex-shrink-0 h-48 sm:h-64 object-cover"
-              />
-            ))}
-          </div>
+        <div className="relative w-full overflow-hidden rounded-2xl shadow-lg h-48 sm:h-64">
+          {banners.map((banner, index) => (
+            <img
+              key={banner.id}
+              src={banner.img}
+              alt={`banner-${index}`}
+              className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+                index === currentBanner ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          ))}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
             {banners.map((_, index) => (
               <span
