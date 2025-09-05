@@ -155,9 +155,9 @@ const App = () => {
         ) : (
           Object.entries(filteredData).map(([category, softwares]) => (
             <div key={category} className="mb-6">
-              <h2 className="text-2xl font-bold mb-4 border-b border-gray-300 dark:border-gray-600 pb-2">
-                {/* 确保标题在暗黑模式下显示为白色 */}
-                <span className="text-gray-900 dark:text-white">{category}</span>
+              {/* 直接在 h2 上应用颜色类，确保在暗黑模式下显示为白色 */}
+              <h2 className="text-2xl font-bold mb-4 border-b border-gray-300 dark:border-gray-600 pb-2 text-gray-900 dark:text-white">
+                {category}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {softwares.map((s, idx) => (
