@@ -65,7 +65,7 @@ const App = () => {
   // 生成方块
   useEffect(() => {
     const blocks = [];
-    const numBlocks = 100; // 根据需要调整方块数量
+    const numBlocks = 30; // 根据需要调整方块数量
     for (let i = 0; i < numBlocks; i++) {
       blocks.push(i);
     }
