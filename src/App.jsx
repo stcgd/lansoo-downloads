@@ -5,10 +5,10 @@ import { Sun, Moon, Search, Download } from "lucide-react";
 // 轮播图图片地址
 const banners = [
   { id: 1, img: "https://img.lansoo.com/file/1756974582770_banner3.png" },
-  { id: 2, img: "https://img.lansoo.com/file/1756974575664_banner2.png" },
+  { id: 2, img: "https://img.lansoo.com/file/1757093612782_image.png" },
   { id: 3, img: "https://img.lansoo.com/file/1756974574144_banner1.png" },
   { id: 4, img: "https://img.lansoo.com/file/1742103223415_PixPin_2025-03-16_13-33-33.png" },
-  { id: 5, img: "https://img.lansoo.com/file/1734518221134_DD_2024-12-18_18-29-26.jpg" },
+  { id: 5, img: "https://img.lansoo.com/file/1757093478872_image.png" },
 ];
 
 // 正则表达式转义函数
