@@ -164,7 +164,8 @@ const App = () => {
                     key={idx}
                     className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md hover:shadow-xl transition-shadow"
                   >
-                    <h3 className="text-lg font-semibold mb-1">
+                    {/* 添加了在黑夜模式下的标题颜色 */}
+                    <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">
                       {highlight(s.name, query)}
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
@@ -180,7 +181,7 @@ const App = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <Download className="w-4 h-4" /> 下载
+                          <Download className="w-4 h-4" /> 
                         </a>
                     </div>
                   </div>
