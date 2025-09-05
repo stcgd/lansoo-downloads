@@ -30,18 +30,12 @@ const App = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [isManualToggle, setIsManualToggle] = useState(false);
   const [currentBanner, setCurrentBanner] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [transitionBlocks, setTransitionBlocks] = useState([]);
   
   // 轮播图自动播放
   useEffect(() => {
     const interval = setInterval(
       () => {
-        setIsTransitioning(true);
-        setTimeout(() => {
-          setCurrentBanner((prev) => (prev + 1) % banners.length);
-          setIsTransitioning(false);
-        }, 800);
+        setCurrentBanner((prev) => (prev + 1) % banners.length);
       },
       4000
     );
@@ -62,16 +56,6 @@ const App = () => {
     setIsManualToggle(true);
   };
   
-  // 生成方块
-  useEffect(() => {
-    const blocks = [];
-    const numBlocks = 30; // 根据需要调整方块数量
-    for (let i = 0; i < numBlocks; i++) {
-      blocks.push(i);
-    }
-    setTransitionBlocks(blocks.sort(() => Math.random() - 0.5));
-  }, []);
-
   const allCategories = ["全部", ...Object.keys(softwareData)];
 
   const filterSoftware = (software) => {
@@ -120,17 +104,6 @@ const App = () => {
               }`}
             />
           ))}
-          {isTransitioning && (
-            <div className="absolute inset-0 grid grid-cols-10 grid-rows-10">
-              {transitionBlocks.map((blockIndex) => (
-                <div 
-                  key={blockIndex}
-                  className="w-full h-full bg-gray-900 transition-opacity duration-300 ease-out"
-                  style={{ transitionDelay: `${blockIndex * 5}ms`, opacity: isTransitioning ? 1 : 0 }}
-                />
-              ))}
-            </div>
-          )}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
             {banners.map((_, index) => (
               <span
@@ -139,13 +112,7 @@ const App = () => {
                   currentBanner === index ? "bg-white" : "bg-gray-400"
                 }`}
                 onClick={() => {
-                    if (!isTransitioning) {
-                        setIsTransitioning(true);
-                        setTimeout(() => {
-                          setCurrentBanner(index);
-                          setIsTransitioning(false);
-                        }, 800);
-                    }
+                   setCurrentBanner(index);
                 }}
               ></span>
             ))}
@@ -217,7 +184,7 @@ const App = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <Download className="w-4 h-4" /> 
+                          <Download className="w-4 h-4" />
                         </a>
                     </div>
                   </div>
