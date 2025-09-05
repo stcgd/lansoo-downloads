@@ -4,11 +4,11 @@ import { Sun, Moon, Search, Download } from "lucide-react";
 
 // 轮播图图片地址
 const banners = [
-  { id: 1, img: "https://img.lansoo.com/file/1756974582770_banner3.png" },
-  { id: 2, img: "https://img.lansoo.com/file/1756974575664_banner2.png" },
-  { id: 3, img: "https://img.lansoo.com/file/1756974574144_banner1.png" },
-  { id: 4, img: "https://img.lansoo.com/file/1742103223415_PixPin_2025-03-16_13-33-33.png" },
-  { id: 5, img: "https://img.lansoo.com/file/1734518221134_DD_2024-12-18_18-29-26.jpg" },
+  { id: 1, img: "https://img.lansoo.com/file/1756974582770_banner3.png" },
+  { id: 2, img: "https://img.lansoo.com/file/1756974575664_banner2.png" },
+  { id: 3, img: "https://img.lansoo.com/file/1756974574144_banner1.png" },
+  { id: 4, img: "https://img.lansoo.com/file/1742103223415_PixPin_2025-03-16_13-33-33.png" },
+  { id: 5, img: "https://img.lansoo.com/file/1734518221134_DD_2024-12-18_18-29-26.jpg" },
 ];
 
 // 正则表达式转义函数
@@ -158,7 +158,6 @@ const App = () => {
           Object.entries(filteredData).map(([category, softwares]) => (
             <div key={category} className="mb-6">
               <h2 className="text-2xl font-bold mb-4 border-b border-gray-300 dark:border-gray-600 pb-2">
-                {/* 修复了黑夜模式下标题不显示的问题 */}
                 <span className="text-gray-900 dark:text-white">{category}</span>
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
