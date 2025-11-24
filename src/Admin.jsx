@@ -1,22 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { db, auth } from './firebaseConfig';
 import { 
-  collection, 
-  getDocs, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  doc, 
-  onSnapshot,
-  query,
-  writeBatch // 导入 writeBatch
-} from "firebase/firestore";
-import { 
-  signInWithEmailAndPassword, 
-  onAuthStateChanged, 
-  signOut,
-  signInWithCustomToken // 为 Canvas 环境导入
-} from "firebase/auth";
+  db, auth,
+  // 确认：只从本地配置导入，不直接从 'firebase/...' 导入
+  collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, writeBatch,
+  // 确认：只从本地配置导入，不直接从 'firebase/...' 导入
+  signInWithEmailAndPassword, onAuthStateChanged, signOut, signInWithCustomToken 
+} from './firebaseConfig';
 import { Download, Edit, Trash, Plus, LogOut, Eye, UploadCloud } from 'lucide-react';
 
 // --- 新增：导入本地 JSON 数据 ---
