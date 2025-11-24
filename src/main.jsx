@@ -61,10 +61,18 @@ const AppRouter = () => {
     }
   };
 
-  // 简单的 URL 路由
+  // 修复：处理部署在子目录（如 /lansoo-downloads/）下的路由问题
+  const BASE_PATH = "/lansoo-downloads/";
   const { pathname } = window.location;
 
-  if (pathname.startsWith('/admin')) {
+  // 规范化路径：从浏览器路径中移除公共基础路径，得到应用内部路径
+  // 示例: /lansoo-downloads/admin -> /admin
+  const normalizedPath = pathname.startsWith(BASE_PATH) 
+    ? pathname.substring(BASE_PATH.length - 1) // 从 / 开始
+    : pathname; 
+    
+  // 检查是否是后台路径
+  if (normalizedPath.startsWith('/admin')) {
     // 如果是后台路径，渲染 Admin 组件
     return <Admin />;
   }
