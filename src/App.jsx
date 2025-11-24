@@ -1,11 +1,13 @@
 import React, { useState, useMemo, useEffect } from "react";
-// --- 1. 从 Firebase 导入 ---
-import { db, auth } from "./firebaseConfig";
-import { collection, query, onSnapshot } from "firebase/firestore";
-import { signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
+// 确认：所有 Firebase 函数都从本地配置导入
+import { 
+  db, auth, 
+  collection, query, onSnapshot, // Firestore functions
+  signInAnonymously, onAuthStateChanged, signInWithCustomToken // Auth functions
+} from "./firebaseConfig"; 
 import { Sun, Moon, Search, Download } from "lucide-react";
 
-// --- 2. 轮播图图片地址 (保留你的链接) ---
+// --- 轮播图图片地址 (保留你的链接) ---
 const banners = [
   { id: 1, img: "https://img.lansoo.com/file/1756974582770_banner3.png" },
   { id: 2, img: "https://img.lansoo.com/file/1757093612782_image.png" },
@@ -37,14 +39,22 @@ const App = () => {
   const [isManualToggle, setIsManualToggle] = useState(false);
   const [currentBanner, setCurrentBanner] = useState(0);
 
-  // --- 3. 新增状态：用于存储从 Firebase 加载的软件 ---
+  // --- 新增状态：用于存储从 Firebase 加载的软件 ---
   const [allSoftware, setAllSoftware] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isAuthReady, setIsAuthReady] = useState(false); // Firebase 认证状态
   
-  // 4. 匿名登录 Firebase 以获取读取权限
+  // 匿名登录 Firebase 以获取读取权限
   useEffect(() => {
+    // 检查 auth 实例是否可用
+    if (!auth) {
+        console.error("Firebase Auth instance is not initialized.");
+        setError("Firebase Auth instance is not initialized.");
+        setIsAuthReady(true); // 避免死循环
+        return;
+    }
+    
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
         try {
@@ -64,14 +74,15 @@ const App = () => {
     return () => unsubscribe();
   }, []);
 
-  // 5. 从 Firebase 加载数据
+  // 从 Firebase 加载数据
   useEffect(() => {
     // 必须等待认证完成后才能查询
-    if (!isAuthReady) {
+    if (!isAuthReady || !db) { // 检查 db 实例
       return;
     }
 
     setIsLoading(true);
+    // 确保 collection path 正确
     const softwareColRef = collection(db, `artifacts/${appId}/public/data/software`);
     const q = query(softwareColRef);
 
@@ -120,13 +131,13 @@ const App = () => {
     setIsManualToggle(true);
   };
   
-  // 6. 动态计算分类 (基于 Firebase 数据)
+  // 动态计算分类 (基于 Firebase 数据)
   const allCategories = useMemo(() => {
     const categories = new Set(allSoftware.map(s => s.category).filter(Boolean)); // 过滤空值
     return ["全部", ...Array.from(categories)];
   }, [allSoftware]);
 
-  // 7. 动态过滤数据 (基于 Firebase 数据)
+  // 动态过滤数据 (基于 Firebase 数据)
   const filteredData = useMemo(() => {
     // 按名称或描述过滤
     const filteredByQuery = allSoftware.filter(software => {
