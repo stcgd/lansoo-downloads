@@ -16,9 +16,7 @@ export default defineConfig({
   },
   
   resolve: {
-    // 🔥 关键修复：修改模块解析字段优先级
-    // 强制 Rollup 优先查找 'module' (ESM) 和其他 ESM 兼容字段，
-    // 以正确处理 Firebase v9/v10+ 的模块化导入，避免 CommonJS 错误。
+    // 强制 Rollup 优先查找 'module' (ESM) 和其他 ESM 兼容字段
     mainFields: ['module', 'jsnext:main', 'jsnext', 'browser', 'main'],
   },
 
@@ -29,7 +27,14 @@ export default defineConfig({
       include: [/node_modules/],
     },
     
-    // 移除上一次尝试的 external 配置，以确保 Firebase 被正确打包，而不是被外部化。
-    rollupOptions: {},
+    // 🔥 关键修复：根据 Rollup 错误提示，明确将 Firebase 模块化导入标记为外部依赖。
+    // 这将告诉 Rollup 跳过对这些路径的解析，直接将它们保留在最终代码中。
+    rollupOptions: {
+      external: [
+        'firebase/app',
+        'firebase/firestore',
+        'firebase/auth',
+      ],
+    },
   },
 });
