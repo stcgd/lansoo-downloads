@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import Admin from './Admin'; // 导入后台组件
+import Admin from './Admin.jsx'; // 修复：确保导入时包含 .jsx 后缀
 import './style.css'; 
 
 // 访客密码组件
@@ -21,8 +21,8 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
       <form onSubmit={handleSubmit} className="p-8 bg-gray-800 rounded-lg shadow-xl flex flex-col items-center">
-        {/* 保留你自定义的标题 */}
-        <h2 className="text-2xl mb-4 font-bold text-blue-400">密码>暗号>密钥>口令!？</h2>
+        {/* 修复 JSX 语法错误：将 > 替换为 HTML 实体 &gt; */}
+        <h2 className="text-2xl mb-4 font-bold text-blue-400">密码&gt;暗号&gt;密钥&gt;口令!？</h2>
         <input
           type="password"
           value={password}
