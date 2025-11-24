@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import Admin from './Admin'; 
-import './style.css'; 
+import './style.css';
 
-// 访客密码组件
 const PasswordScreen = ({ onPasswordSubmit }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (password === 'sunway') { // 访客密码
+    if (password === 'sunway') {
       onPasswordSubmit(true);
     } else {
       setError('密码错误，请重试。');
@@ -21,7 +19,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
       <form onSubmit={handleSubmit} className="p-8 bg-gray-800 rounded-lg shadow-xl flex flex-col items-center">
-        <h2 className="text-2xl mb-4 font-bold text-blue-400">密码&gt;暗号&gt;密钥&gt;口令!？</h2>
+        <h2 className="text-2xl mb-4 font-bold text-blue-400">密码>暗号>密钥>口令!？</h2>
         <input
           type="password"
           value={password}
@@ -41,8 +39,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
   );
 };
 
-// 主路由组件
-const AppRouter = () => {
+const Main = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -60,19 +57,8 @@ const AppRouter = () => {
     }
   };
 
-  const { pathname } = window.location;
-
-  // 关键修复：使用 includes() 检查路径是否包含 "/admin"，
-  // 这种方法对部署在子目录和重定向的环境更具鲁棒性。
-  if (pathname.toLowerCase().includes('/admin')) {
-    // 渲染 Admin 组件
-    return <Admin />;
-  }
-
-  // 以下是主站的逻辑
   if (isLoading) {
-    // 增加一个更明显的加载指示器
-    return <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white text-xl">应用程序正在加载...</div>;
+    return <div className="loading-screen">加载中...</div>;
   }
 
   return isAuthenticated ? (
@@ -82,9 +68,4 @@ const AppRouter = () => {
   );
 };
 
-// 确保我们只渲染一次根组件
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <AppRouter />
-  </React.StrictMode>
-);
+ReactDOM.createRoot(document.getElementById('root')).render(<Main />);
