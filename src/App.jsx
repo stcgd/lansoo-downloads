@@ -1,12 +1,58 @@
-import React, { useState, useMemo, useEffect } from "react";
-// --- 1. 从 Firebase 导入 ---
-// 确保从 ./firebaseConfig 导入 db, auth, 和 initialAuthToken
-import { db, auth, initialAuthToken } from "./firebaseConfig"; 
-import { collection, query, onSnapshot } from "firebase/firestore";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
+// --- 1. 从 Firebase 导入服务对象 ---
+// FIX: 显式添加 .js 扩展名以解决导入解析错误
+import { db, auth, initialAuthToken } from "./firebaseConfig.js"; 
+// --- 2. 从 Firebase SDK 导入 Firestore 辅助函数（已修复 Admin 依赖） ---
+import { 
+  collection, query, onSnapshot, 
+  writeBatch, doc, getDocs, setLogLevel
+} from "firebase/firestore"; 
 import { signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
-import { Sun, Moon, Search, Download } from "lucide-react";
+import { Sun, Moon, Search, Download, Settings, Loader2 } from "lucide-react";
 
-// --- 2. 轮播图图片地址 (保留你的链接) ---
+// 启用 Firestore Debug 日志
+setLogLevel('debug');
+
+// --- 3. 嵌入 Admin Panel 所需的模拟数据 ---
+const mockSoftwareData = [
+    {
+        name: "Photoshop CC 2024",
+        category: "设计工具",
+        description: "Adobe Photoshop CC 2024 最新版，专业的图像处理和编辑软件。",
+        downloadUrl: "https://mocklink.com/photoshop-2024",
+        updatedAt: "2024-11-20"
+    },
+    {
+        name: "Visual Studio Code",
+        category: "开发工具",
+        description: "轻量级但功能强大的源代码编辑器，支持多种编程语言。",
+        downloadUrl: "https://mocklink.com/vscode",
+        updatedAt: "2024-11-18"
+    },
+    {
+        name: "Notion",
+        category: "效率工具",
+        description: "集笔记、知识库和项目管理于一体的协作工具。",
+        downloadUrl: "https://mocklink.com/notion",
+        updatedAt: "2024-11-21"
+    },
+    {
+        name: "Final Cut Pro X",
+        category: "视频编辑",
+        description: "Apple 平台上的专业视频剪辑软件，高性能和直观的界面。",
+        downloadUrl: "https://mocklink.com/fcp-x",
+        updatedAt: "2024-11-15"
+    },
+    {
+        name: "Obsidian",
+        category: "效率工具",
+        description: "基于 Markdown 的本地知识管理和笔记软件。",
+        downloadUrl: "https://mocklink.com/obsidian",
+        updatedAt: "2024-11-23"
+    }
+];
+
+// --- 4. 轮播图图片地址 ---
 const banners = [
   { id: 1, img: "https://img.lansoo.com/file/1756974582770_banner3.png" },
   { id: 2, img: "https://img.lansoo.com/file/1757093612782_image.png" },
@@ -28,9 +74,115 @@ const highlight = (text, query) => {
   );
 };
 
-// --- Canvas 环境特定代码 ---
+// Canvas 环境特定代码
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+const PUBLIC_COLLECTION_PATH = `artifacts/${appId}/public/data/software`;
 
+
+// --- 5. Admin Panel Component (用于上传 mock 数据) ---
+
+const AdminPanel = ({ onBack }) => {
+    const [status, setStatus] = useState({ message: '等待上传...', type: 'info' });
+    const [isUploading, setIsUploading] = useState(false);
+
+    // 获取当前用户ID (用于控制台日志)
+    const userId = auth.currentUser?.uid || 'anonymous';
+    
+    // 上传数据函数
+    const handleUpload = async () => {
+        if (!db) {
+            setStatus({ message: '错误：Firestore 尚未初始化。', type: 'error' });
+            return;
+        }
+
+        setIsUploading(true);
+        setStatus({ message: '正在清除旧数据...', type: 'info' });
+
+        try {
+            // 1. 获取并删除所有现有文档
+            const q = query(collection(db, PUBLIC_COLLECTION_PATH));
+            const snapshot = await getDocs(q);
+            
+            const deleteBatch = writeBatch(db);
+            snapshot.docs.forEach((d) => {
+                deleteBatch.delete(doc(db, PUBLIC_COLLECTION_PATH, d.id));
+            });
+            await deleteBatch.commit();
+            console.log(`[Admin] 用户 ${userId} 成功删除了 ${snapshot.docs.length} 个旧文档。`);
+            setStatus({ message: `旧数据清除成功，共 ${snapshot.docs.length} 条。`, type: 'info' });
+
+            // 2. 批量上传新文档
+            setStatus({ message: `正在上传 ${mockSoftwareData.length} 条新数据...`, type: 'info' });
+            
+            const newBatch = writeBatch(db);
+            mockSoftwareData.forEach((data) => {
+                // 使用 doc() 和 collection() 来创建文档引用，并使用 data.name 作为文档 ID 以简化
+                const newDocRef = doc(db, PUBLIC_COLLECTION_PATH, data.name.replace(/\s+/g, '-').toLowerCase());
+                newBatch.set(newDocRef, data);
+            });
+            await newBatch.commit();
+            
+            console.log(`[Admin] 用户 ${userId} 成功上传了 ${mockSoftwareData.length} 条新软件数据。`);
+            setStatus({ message: `数据上传成功！共 ${mockSoftwareData.length} 条软件。`, type: 'success' });
+
+        } catch (e) {
+            console.error("[Admin] 批量操作失败: ", e);
+            setStatus({ message: `上传过程中发生错误：${e.message}`, type: 'error' });
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    const statusClasses = useMemo(() => {
+        switch (status.type) {
+            case 'success':
+                return 'bg-green-100 border-green-400 text-green-700 dark:bg-green-900 dark:border-green-700 dark:text-green-300';
+            case 'error':
+                return 'bg-red-100 border-red-400 text-red-700 dark:bg-red-900 dark:border-red-700 dark:text-red-300';
+            default:
+                return 'bg-blue-100 border-blue-400 text-blue-700 dark:bg-blue-900 dark:border-blue-700 dark:text-blue-300';
+        }
+    }, [status.type]);
+
+    return (
+        <div className="max-w-4xl mx-auto p-8 bg-gray-50 dark:bg-gray-800 rounded-xl shadow-2xl mt-10">
+            <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6 border-b pb-3">
+                管理员面板 (数据初始化)
+            </h2>
+            <div className={`p-4 rounded-lg border-l-4 mb-6 ${statusClasses}`}>
+                <p className="font-medium">状态:</p>
+                <p className="mt-1 text-sm">{status.message}</p>
+            </div>
+
+            <p className="text-gray-700 dark:text-gray-300 mb-4">
+                点击下方按钮将 **{mockSoftwareData.length}** 条模拟软件数据上传到 Firestore 的公共集合
+                (`<span className="font-mono text-sm">{PUBLIC_COLLECTION_PATH}</span>`)。
+                此操作将清除旧数据。
+            </p>
+
+            <button
+                onClick={handleUpload}
+                disabled={isUploading}
+                className="flex items-center justify-center w-full px-6 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 transition-colors shadow-lg"
+            >
+                {isUploading ? (
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                ) : (
+                    <Download className="mr-2 h-5 w-5" />
+                )}
+                {isUploading ? '正在上传中...' : '上传模拟数据到 Firestore'}
+            </button>
+            <button
+                onClick={onBack}
+                className="mt-4 w-full px-6 py-3 text-base font-medium rounded-xl text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+            >
+                返回主页
+            </button>
+        </div>
+    );
+};
+
+// --- 6. 主应用 Component ---
 const App = () => {
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("全部");
@@ -38,26 +190,22 @@ const App = () => {
   const [isManualToggle, setIsManualToggle] = useState(false);
   const [currentBanner, setCurrentBanner] = useState(0);
 
-  // --- 3. 新增状态：用于存储从 Firebase 加载的软件 ---
   const [allSoftware, setAllSoftware] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isAuthReady, setIsAuthReady] = useState(false); // Firebase 认证状态
-  
-  // 4. 匿名登录 Firebase 以获取读取权限
+  const [isAuthReady, setIsAuthReady] = useState(false); 
+  const [view, setView] = useState('main'); // 'main' 或 'admin'
+
+  // 匿名登录 Firebase 以获取读取权限
   useEffect(() => {
-    // 确保 auth 实例已准备好 (在 firebaseConfig.js 中初始化)
     if (!auth) return;
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      // 检查是否已经登录（匿名或通过 CustomToken）
       if (!user) {
         try {
-          // --- Canvas 环境特定代码：使用 CustomToken 登录 ---
           if (initialAuthToken) {
             await signInWithCustomToken(auth, initialAuthToken);
           } else {
-            // 如果没有 CustomToken，则使用匿名登录
             await signInAnonymously(auth);
           }
         } catch (err) {
@@ -65,32 +213,30 @@ const App = () => {
           setError("无法连接到数据库。");
         }
       }
-      setIsAuthReady(true); // 无论成功与否，都标记认证流程已完成
+      setIsAuthReady(true); 
     });
     return () => unsubscribe();
-  }, []); // 仅在组件挂载时运行一次
+  }, []); 
 
-  // 5. 从 Firebase 加载数据
+  // 从 Firebase 加载数据
   useEffect(() => {
-    // 必须等待认证完成后才能查询
     if (!isAuthReady || !db) {
       return;
     }
 
     setIsLoading(true);
-    // 使用公共数据路径
-    const softwareColRef = collection(db, `artifacts/${appId}/public/data/software`);
+    const softwareColRef = collection(db, PUBLIC_COLLECTION_PATH);
     const q = query(softwareColRef);
 
-    // 使用 onSnapshot 实时更新
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      // 确保数据结构正确，特别是 updatedAt 和 downloadUrl 字段
       const softwareList = snapshot.docs.map(doc => ({ 
         id: doc.id, 
-        ...doc.data() 
+        ...doc.data(),
+        // 确保 updatedAt 存在，用于显示
+        updatedAt: doc.data().updatedAt || 'N/A'
       }));
       setAllSoftware(softwareList);
-      setError(null); // 清除之前的错误
+      setError(null); 
       setIsLoading(false);
     }, (err) => {
       console.error("Firebase 数据加载失败: ", err);
@@ -98,10 +244,9 @@ const App = () => {
       setIsLoading(false);
     });
 
-    // 清理
     return () => unsubscribe();
 
-  }, [isAuthReady]); // 依赖 isAuthReady
+  }, [isAuthReady]); 
   
   // 轮播图自动播放
   useEffect(() => {
@@ -113,6 +258,24 @@ const App = () => {
     );
     return () => clearInterval(interval);
   }, []);
+
+  // 键盘快捷键切换到 Admin
+  useEffect(() => {
+      const handleKeyDown = (e) => {
+          // 仅当用户在非输入状态下按下 'A' 键时切换到 admin 视图
+          if (e.key === 'a' || e.key === 'A') {
+              // 检查当前是否有输入框获得焦点
+              const isTyping = document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA';
+              if (!isTyping) {
+                  e.preventDefault();
+                  setView(prevView => prevView === 'main' ? 'admin' : 'main');
+              }
+          }
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []); // 仅在组件挂载时注册一次
 
   // 根据系统时间设置暗黑模式
   useEffect(() => {
@@ -137,29 +300,25 @@ const App = () => {
     setIsManualToggle(true);
   };
   
-  // 6. 动态计算分类 (基于 Firebase 数据)
+  // 动态计算分类
   const allCategories = useMemo(() => {
-    const categories = new Set(allSoftware.map(s => s.category).filter(Boolean)); // 过滤空值
+    const categories = new Set(allSoftware.map(s => s.category).filter(Boolean)); 
     return ["全部", ...Array.from(categories)];
   }, [allSoftware]);
 
-  // 7. 动态过滤数据 (基于 Firebase 数据)
+  // 动态过滤数据
   const filteredData = useMemo(() => {
-    // 按名称或描述过滤
     const filteredByQuery = allSoftware.filter(software => {
       const lowerQuery = query.toLowerCase();
-      // 检查 name 和 description 是否存在，防止报错
       const nameMatch = software.name && software.name.toLowerCase().includes(lowerQuery);
       const descriptionMatch = software.description && software.description.toLowerCase().includes(lowerQuery);
       return nameMatch || descriptionMatch;
     });
 
-    // 按分类过滤
     const filteredByCategory = selectedCategory === "全部"
       ? filteredByQuery
       : filteredByQuery.filter(s => s.category === selectedCategory);
     
-    // 组合成按分类的对象，并对每个分类内的软件按名称排序
     const categoriesMap = {};
     filteredByCategory.forEach(s => {
       const categoryName = s.category || '未分类';
@@ -169,14 +328,11 @@ const App = () => {
       categoriesMap[categoryName].push(s);
     });
     
-    // 如果选择了特定分类，只返回该分类
     if (selectedCategory !== '全部' && categoriesMap[selectedCategory]) {
-        // 对该分类内的软件进行排序
         categoriesMap[selectedCategory].sort((a, b) => a.name.localeCompare(b.name));
         return { [selectedCategory]: categoriesMap[selectedCategory] };
     }
     
-    // 对所有分类进行排序
     Object.keys(categoriesMap).forEach(category => {
         categoriesMap[category].sort((a, b) => a.name.localeCompare(b.name));
     });
@@ -185,18 +341,39 @@ const App = () => {
 
   }, [query, selectedCategory, allSoftware]);
 
+
+  // --- 7. 渲染逻辑 (根据 view 状态切换) ---
+  if (view === 'admin') {
+      return <AdminPanel onBack={() => setView('main')} />;
+  }
+  
+  // 主应用视图
   return (
-    <div className="min-h-screen font-sans transition-colors duration-300">
+    <div className="min-h-screen font-sans transition-colors duration-300 bg-white dark:bg-gray-900">
       {/* 顶部导航 */}
       <div className="flex justify-between items-center p-4 max-w-6xl mx-auto border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-900 z-10 shadow-sm">
-        <h1 className="text-xl font-bold text-gray-900 dark:text-white">Software Downloads 在线技术支持@微信：qq2269404909</h1>
-        <button
-          onClick={toggleDarkMode}
-          className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-yellow-400 hover:scale-110 transition-transform shadow-md"
-          title={darkMode ? "切换到亮色模式" : "切换到暗黑模式"}
-        >
-          {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-        </button>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+            Software Downloads 
+            <span className="text-xs font-normal text-gray-500 dark:text-gray-400">
+                在线技术支持@微信：qq2269404909
+            </span>
+        </h1>
+        <div className="flex items-center space-x-3">
+            <button
+              onClick={() => setView('admin')}
+              className="p-2 rounded-full bg-yellow-100 dark:bg-yellow-700 text-yellow-800 dark:text-white hover:scale-110 transition-transform shadow-md"
+              title="切换到管理员面板 (按 'A' 键)"
+            >
+              <Settings className="w-5 h-5" />
+            </button>
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-yellow-400 hover:scale-110 transition-transform shadow-md"
+              title={darkMode ? "切换到亮色模式" : "切换到暗黑模式"}
+            >
+              {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+        </div>
       </div>
 
       {/* 轮播图部分 */}
@@ -207,7 +384,7 @@ const App = () => {
               key={banner.id}
               src={banner.img}
               alt={`banner-${index}`}
-              onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/800x256/4c51bf/ffffff?text=Image+Not+Found" }} // 图片加载失败处理
+              onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/800x256/4c51bf/ffffff?text=Image+Not+Found" }} 
               className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
                 index === currentBanner ? 'opacity-100' : 'opacity-0'
               }`}
@@ -262,7 +439,7 @@ const App = () => {
       <div className="max-w-6xl mx-auto px-4 pb-10">
         {isLoading && allSoftware.length === 0 ? (
           <div className="text-center text-gray-500 dark:text-gray-400 p-8 text-xl animate-pulse">
-            <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 dark:border-gray-700 h-12 w-12 mb-4 mx-auto"></div>
+            <Loader2 className="h-12 w-12 mb-4 mx-auto animate-spin text-blue-500" />
             正在努力加载软件列表...
           </div>
         ) : error ? (
@@ -278,13 +455,13 @@ const App = () => {
         ) : (
           Object.entries(filteredData).map(([category, softwares]) => (
             <div key={category} className="mb-8">
-              <h2 className="text-2xl font-bold mb-4 pb-2 text-blue-600 dark:text-blue-400">
+              <h2 className="text-2xl font-bold mb-4 pb-2 text-blue-600 dark:text-blue-400 border-b border-gray-200 dark:border-gray-700">
                 {category}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {softwares.map((s) => ( 
                   <div
-                    key={s.id} // 使用 Firebase 文档 ID 作为 key
+                    key={s.id} 
                     className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-0.5 border border-gray-100 dark:border-gray-700"
                   >
                     <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white line-clamp-1">
@@ -317,7 +494,7 @@ const App = () => {
       
       {/* 简单的页脚 */}
       <footer className="max-w-6xl mx-auto px-4 py-4 text-center text-gray-500 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-700">
-        <p>&copy; {new Date().getFullYear()} Software Downloads. 技术支持信息如上所示。</p>
+        <p>&copy; {new Date().getFullYear()} Software Downloads. 按 'A' 键进入管理员面板。</p>
       </footer>
     </div>
   );
