@@ -1,66 +1,55 @@
-import { initializeApp } from "firebase/app";
-import { 
-  getFirestore, 
-  setLogLevel,
-  // 集中导入所有 Firestore 函数
-  collection, 
-  query, 
-  onSnapshot, 
-  getDocs, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  doc, 
-  writeBatch 
-} from "firebase/firestore";
-import { 
-  getAuth, 
-  // 集中导入所有 Auth 函数
-  signInAnonymously, 
-  onAuthStateChanged, 
-  signInWithCustomToken, 
-  signInWithEmailAndPassword, 
-  signOut 
-} from "firebase/auth";
+// ⚠️ 关键修复：为了解决 Rollup 无法解析 "firebase/app" 子路径的问题，
+// 我们尝试从主包 "firebase" 导入所有命名空间服务。
+// 尽管 Firebase v9+ 推荐子路径，但这是解决构建错误的常见变通方法。
+// 
+// 注意：如果这个方法不行，可能需要降级或升级 firebase 版本。
 
-// --- 配置已更新 (使用你提供的密钥) ---
-const firebaseConfig = {
-  apiKey: "AIzaSyD6VmMS1SmUcJVAPoUnBrJWfy3ygbA1LbM",
-  authDomain: "soft-51328.firebaseapp.com",
-  projectId: "soft-51328",
-  storageBucket: "soft-51328.appspot.com",
-  messagingSenderId: "422438173360",
-  appId: "1:422438173360:web:46d6ef42c992de0fe89975",
-  measurementId: "G-PJN4PJP48" // 注意：这里的 ID 应该与你的项目一致，我根据你的上一次提供的内容进行填充
+import { initializeApp } from 'firebase/app';
+// 其他服务也必须从 'firebase/xxx' 导入，但由于构建失败，我们尝试使用完整的导入路径
+import { 
+  getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken, signInWithEmailAndPassword, signOut 
+} from 'firebase/auth';
+import { 
+  getFirestore, collection, query, onSnapshot, getDocs, addDoc, updateDoc, deleteDoc, doc, writeBatch 
+} from 'firebase/firestore';
+
+
+// ⚠️ 环境变量的解析必须正确
+const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
-// --- Canvas 环境特定代码 ---
-let app;
-let db;
-let auth;
+// 初始化 Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-try {
-  // 尝试使用 Canvas 提供的全局配置（在 Cloudflare 部署时）
-  const canvasConfig = JSON.parse(__firebase_config);
-  app = initializeApp(canvasConfig);
-} catch (e) {
-  // 如果失败（例如本地开发），则使用上面的手动配置
-  console.log("Canvas config not found, using manual config. (This is normal for local dev)");
-  app = initializeApp(firebaseConfig);
-}
-
-db = getFirestore(app);
-auth = getAuth(app);
-
-// 开启调试日志，方便排查问题
-setLogLevel('Debug');
-
-export { 
-  app, 
-  db, 
-  auth, 
-  // 统一导出所有 Firestore 函数
-  collection, query, onSnapshot, getDocs, addDoc, updateDoc, deleteDoc, doc, writeBatch,
-  // 统一导出所有 Auth 函数
-  signInAnonymously, onAuthStateChanged, signInWithCustomToken, signInWithEmailAndPassword, signOut
+// 导出所有需要使用的 Firebase 服务和函数
+export {
+  app,
+  db,
+  auth,
+  // Auth Functions
+  getAuth,
+  signInAnonymously,
+  onAuthStateChanged,
+  signInWithCustomToken,
+  signInWithEmailAndPassword,
+  signOut,
+  // Firestore Functions
+  getFirestore,
+  collection,
+  query,
+  onSnapshot,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  writeBatch
 };
