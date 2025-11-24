@@ -1,14 +1,17 @@
 import React, { useState, useMemo, useEffect } from "react";
-import softwareData from "./data/software.json";
+// --- 1. 从 Firebase 导入 ---
+import { db, auth } from "./firebaseConfig";
+import { collection, query, onSnapshot } from "firebase/firestore";
+import { signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
 import { Sun, Moon, Search, Download } from "lucide-react";
 
-// 轮播图图片地址
+// --- 2. 轮播图图片地址 (保留你的链接) ---
 const banners = [
-  { id: 1, img: "https://img.lansoo.com/file/1756974582770_banner3.png" },
-  { id: 2, img: "https://img.lansoo.com/file/1757093612782_image.png" },
-  { id: 3, img: "https://img.lansoo.com/file/1756974574144_banner1.png" },
-  { id: 4, img: "https://img.lansoo.com/file/1742103223415_PixPin_2025-03-16_13-33-33.png" },
-  { id: 5, img: "https://img.lansoo.com/file/1757093478872_image.png" },
+  { id: 1, img: "https://img.lansoo.com/file/1756974582770_banner3.png" },
+  { id: 2, img: "https://img.lansoo.com/file/1757093612782_image.png" },
+  { id: 3, img: "https://img.lansoo.com/file/1756974574144_banner1.png" },
+  { id: 4, img: "https://img.lansoo.com/file/1742103223415_PixPin_2025-03-16_13-33-33.png" },
+  { id: 5, img: "https://img.lansoo.com/file/1757093478872_image.png" },
 ];
 
 // 正则表达式转义函数
@@ -24,12 +27,73 @@ const highlight = (text, query) => {
   );
 };
 
+// --- Canvas 环境特定代码 ---
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
 const App = () => {
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("全部");
   const [darkMode, setDarkMode] = useState(false);
   const [isManualToggle, setIsManualToggle] = useState(false);
   const [currentBanner, setCurrentBanner] = useState(0);
+
+  // --- 3. 新增状态：用于存储从 Firebase 加载的软件 ---
+  const [allSoftware, setAllSoftware] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isAuthReady, setIsAuthReady] = useState(false); // Firebase 认证状态
+  
+  // 4. 匿名登录 Firebase 以获取读取权限
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        try {
+          // --- Canvas 环境特定代码 ---
+          if (typeof __initial_auth_token !== 'undefined') {
+            await signInWithCustomToken(auth, __initial_auth_token);
+          } else {
+            await signInAnonymously(auth);
+          }
+        } catch (err) {
+          console.error("Firebase 匿名登录失败: ", err);
+          setError("无法连接到数据库。");
+        }
+      }
+      setIsAuthReady(true);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // 5. 从 Firebase 加载数据
+  useEffect(() => {
+    // 必须等待认证完成后才能查询
+    if (!isAuthReady) {
+      return;
+    }
+
+    setIsLoading(true);
+    const softwareColRef = collection(db, `artifacts/${appId}/public/data/software`);
+    const q = query(softwareColRef);
+
+    // 使用 onSnapshot 实时更新
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      // 确保数据结构正确，特别是 updatedAt 和 downloadUrl 字段
+      const softwareList = snapshot.docs.map(doc => ({ 
+        id: doc.id, 
+        ...doc.data() 
+      }));
+      setAllSoftware(softwareList);
+      setIsLoading(false);
+    }, (err) => {
+      console.error("Firebase 数据加载失败: ", err);
+      setError("加载软件列表失败，请稍后重试。");
+      setIsLoading(false);
+    });
+
+    // 清理
+    return () => unsubscribe();
+
+  }, [isAuthReady]); // 依赖 isAuthReady
   
   // 轮播图自动播放
   useEffect(() => {
@@ -56,31 +120,50 @@ const App = () => {
     setIsManualToggle(true);
   };
   
-  const allCategories = ["全部", ...Object.keys(softwareData)];
+  // 6. 动态计算分类 (基于 Firebase 数据)
+  const allCategories = useMemo(() => {
+    const categories = new Set(allSoftware.map(s => s.category).filter(Boolean)); // 过滤空值
+    return ["全部", ...Array.from(categories)];
+  }, [allSoftware]);
 
-  const filterSoftware = (software) => {
-    const lowerQuery = query.toLowerCase();
-    return (
-      software.name.toLowerCase().includes(lowerQuery) ||
-      software.description.toLowerCase().includes(lowerQuery)
-    );
-  };
-
+  // 7. 动态过滤数据 (基于 Firebase 数据)
   const filteredData = useMemo(() => {
-    if (selectedCategory === "全部") {
-      const allSoftware = Object.values(softwareData).flat();
-      const filtered = allSoftware.filter(filterSoftware);
-      return { 全部: filtered };
-    } else {
-      const categorySoftwares = softwareData[selectedCategory] || [];
-      const filtered = categorySoftwares.filter(filterSoftware);
-      return { [selectedCategory]: filtered };
+    // 按名称或描述过滤
+    const filteredByQuery = allSoftware.filter(software => {
+      const lowerQuery = query.toLowerCase();
+      return (
+        software.name && software.name.toLowerCase().includes(lowerQuery) ||
+        (software.description && software.description.toLowerCase().includes(lowerQuery))
+      );
+    });
+
+    // 按分类过滤
+    const filteredByCategory = selectedCategory === "全部"
+      ? filteredByQuery
+      : filteredByQuery.filter(s => s.category === selectedCategory);
+    
+    // 组合成按分类的对象
+    const categoriesMap = {};
+    filteredByCategory.forEach(s => {
+      const categoryName = s.category || '未分类';
+      if (!categoriesMap[categoryName]) {
+        categoriesMap[categoryName] = [];
+      }
+      categoriesMap[categoryName].push(s);
+    });
+    
+    // 如果选择了特定分类，只显示该分类
+    if (selectedCategory !== '全部') {
+        return { [selectedCategory]: categoriesMap[selectedCategory] || [] };
     }
-  }, [query, selectedCategory]);
+
+    return categoriesMap;
+
+  }, [query, selectedCategory, allSoftware]);
 
   return (
     <div className={darkMode ? "bg-gray-900 text-white min-h-screen font-sans" : "bg-gray-100 text-gray-900 min-h-screen font-sans"}>
-      {/* 顶部导航 */}
+      {/* 顶部导航 (保留你的新标题) */}
       <div className="flex justify-between items-center p-4 max-w-6xl mx-auto">
         <h1 className="text-xl font-bold">Software Downloads 在线技术支持@微信：qq2269404909</h1>
         <button
@@ -99,6 +182,7 @@ const App = () => {
               key={banner.id}
               src={banner.img}
               alt={`banner-${index}`}
+              onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/800x256/3498db/ffffff?text=Banner+Error" }} // 图片加载失败处理
               className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
                 index === currentBanner ? 'opacity-100' : 'opacity-0'
               }`}
@@ -151,21 +235,24 @@ const App = () => {
 
       {/* 软件卡片列表 */}
       <div className="max-w-6xl mx-auto px-4 pb-10">
-        {Object.values(filteredData).flat().length === 0 ? (
+        {isLoading ? (
+          <div className="text-center text-gray-500 dark:text-gray-400 p-8">加载软件列表中...</div>
+        ) : error ? (
+          <div className="text-center text-red-500 p-8">{error}</div>
+        ) : Object.values(filteredData).flat().length === 0 ? (
           <div className="text-center text-gray-500 dark:text-gray-400 p-8">
             没有找到与“{query}”相关的软件，请尝试其他关键词。
           </div>
         ) : (
           Object.entries(filteredData).map(([category, softwares]) => (
             <div key={category} className="mb-6">
-              {/* 锁定标题颜色为蓝色，确保它在日夜模式下都可见 */}
               <h2 className="text-2xl font-bold mb-4 border-b border-gray-300 dark:border-gray-600 pb-2 text-blue-600">
                 {category}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {softwares.map((s, idx) => (
+                {softwares.map((s) => ( 
                   <div
-                    key={idx}
+                    key={s.id} // 使用 Firebase 文档 ID 作为 key
                     className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md hover:shadow-xl transition-shadow"
                   >
                     <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">
@@ -176,7 +263,8 @@ const App = () => {
                     </p>
                     <div className="flex items-center justify-between mt-4">
                         <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {`更新日期: ${s.updatedAt}`}
+                          {/* 确保 updatedAt 存在且格式正确 */}
+                          {`更新日期: ${s.updatedAt || 'N/A'}`}
                         </span>
                         <a
                           href={s.downloadUrl}
