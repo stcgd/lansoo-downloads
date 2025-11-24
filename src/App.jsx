@@ -1,19 +1,37 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-// --- 1. 从 Firebase 导入服务对象 ---
-// FIX: 显式添加 .js 扩展名以解决导入解析错误
-import { db, auth, initialAuthToken } from "./firebaseConfig.js"; 
-// --- 2. 从 Firebase SDK 导入 Firestore 辅助函数（已修复 Admin 依赖） ---
+// 修正后的 Firebase 导入：将不同的功能从各自的模块中导入
+import { initializeApp } from "firebase/app"; 
+import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
 import { 
-  collection, query, onSnapshot, 
-  writeBatch, doc, getDocs, setLogLevel
-} from "firebase/firestore"; 
-import { signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
+  getFirestore, 
+  collection, query, onSnapshot, writeBatch, doc, getDocs, setLogLevel
+} from "firebase/firestore";
+
 import { Sun, Moon, Search, Download, Settings, Loader2 } from "lucide-react";
 
+// --- 1. Firebase 初始化与配置 (已合并) ---
 // 启用 Firestore Debug 日志
 setLogLevel('debug');
 
-// --- 3. 嵌入 Admin Panel 所需的模拟数据 ---
+// 从 Canvas 环境获取配置信息和认证令牌
+const firebaseConfig = typeof __firebase_config !== 'undefined' 
+    ? JSON.parse(__firebase_config) 
+    : {};
+const initialAuthToken = typeof __initial_auth_token !== 'undefined' 
+    ? __initial_auth_token 
+    : null;
+
+// 初始化 Firebase 应用
+const app = initializeApp(firebaseConfig);
+// 初始化并获取认证和数据库服务实例
+const db = getFirestore(app);
+const auth = getAuth(app); 
+
+// Canvas 环境特定代码
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+const PUBLIC_COLLECTION_PATH = `artifacts/${appId}/public/data/software`;
+
+// --- 2. 嵌入 Admin Panel 所需的模拟数据 ---
 const mockSoftwareData = [
     {
         name: "Photoshop CC 2024",
@@ -52,7 +70,7 @@ const mockSoftwareData = [
     }
 ];
 
-// --- 4. 轮播图图片地址 ---
+// --- 3. 轮播图图片地址 ---
 const banners = [
   { id: 1, img: "https://img.lansoo.com/file/1756974582770_banner3.png" },
   { id: 2, img: "https://img.lansoo.com/file/1757093612782_image.png" },
@@ -74,12 +92,8 @@ const highlight = (text, query) => {
   );
 };
 
-// Canvas 环境特定代码
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-const PUBLIC_COLLECTION_PATH = `artifacts/${appId}/public/data/software`;
 
-
-// --- 5. Admin Panel Component (用于上传 mock 数据) ---
+// --- 4. Admin Panel Component (用于上传 mock 数据) ---
 
 const AdminPanel = ({ onBack }) => {
     const [status, setStatus] = useState({ message: '等待上传...', type: 'info' });
@@ -182,7 +196,7 @@ const AdminPanel = ({ onBack }) => {
     );
 };
 
-// --- 6. 主应用 Component ---
+// --- 5. 主应用 Component ---
 const App = () => {
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("全部");
@@ -342,7 +356,7 @@ const App = () => {
   }, [query, selectedCategory, allSoftware]);
 
 
-  // --- 7. 渲染逻辑 (根据 view 状态切换) ---
+  // --- 6. 渲染逻辑 (根据 view 状态切换) ---
   if (view === 'admin') {
       return <AdminPanel onBack={() => setView('main')} />;
   }
