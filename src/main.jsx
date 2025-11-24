@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import Admin from './Admin.jsx'; // 修复：确保导入时包含 .jsx 后缀
+import Admin from './Admin'; // 修复：移除显式扩展名 .jsx，让Vite/Rollup自动解析，解决构建错误
 import './style.css'; 
 
 // 访客密码组件
