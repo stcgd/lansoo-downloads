@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import Admin from './Admin'; // 修复：移除显式扩展名 .jsx，让Vite/Rollup自动解析，解决构建错误
+import Admin from './Admin'; 
 import './style.css'; 
 
 // 访客密码组件
@@ -21,7 +21,6 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
       <form onSubmit={handleSubmit} className="p-8 bg-gray-800 rounded-lg shadow-xl flex flex-col items-center">
-        {/* 修复 JSX 语法错误：将 > 替换为 HTML 实体 &gt; */}
         <h2 className="text-2xl mb-4 font-bold text-blue-400">密码&gt;暗号&gt;密钥&gt;口令!？</h2>
         <input
           type="password"
@@ -61,25 +60,19 @@ const AppRouter = () => {
     }
   };
 
-  // 修复：处理部署在子目录（如 /lansoo-downloads/）下的路由问题
-  const BASE_PATH = "/lansoo-downloads/";
   const { pathname } = window.location;
 
-  // 规范化路径：从浏览器路径中移除公共基础路径，得到应用内部路径
-  // 示例: /lansoo-downloads/admin -> /admin
-  const normalizedPath = pathname.startsWith(BASE_PATH) 
-    ? pathname.substring(BASE_PATH.length - 1) // 从 / 开始
-    : pathname; 
-    
-  // 检查是否是后台路径
-  if (normalizedPath.startsWith('/admin')) {
-    // 如果是后台路径，渲染 Admin 组件
+  // 关键修复：使用 includes() 检查路径是否包含 "/admin"，
+  // 这种方法对部署在子目录和重定向的环境更具鲁棒性。
+  if (pathname.toLowerCase().includes('/admin')) {
+    // 渲染 Admin 组件
     return <Admin />;
   }
 
   // 以下是主站的逻辑
   if (isLoading) {
-    return <div className="loading-screen">加载中...</div>;
+    // 增加一个更明显的加载指示器
+    return <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white text-xl">应用程序正在加载...</div>;
   }
 
   return isAuthenticated ? (
@@ -89,4 +82,9 @@ const AppRouter = () => {
   );
 };
 
-ReactDOM.createRoot(document.getElementById('root')).render(<AppRouter />);
+// 确保我们只渲染一次根组件
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <AppRouter />
+  </React.StrictMode>
+);
