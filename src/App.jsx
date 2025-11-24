@@ -1,7 +1,10 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 // 修正后的 Firebase 导入：将不同的功能从各自的模块中导入
+// 应用初始化
 import { initializeApp } from "firebase/app"; 
+// 认证服务
 import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
+// 数据库和操作
 import { 
   getFirestore, 
   collection, query, onSnapshot, writeBatch, doc, getDocs, setLogLevel
@@ -9,7 +12,7 @@ import {
 
 import { Sun, Moon, Search, Download, Settings, Loader2 } from "lucide-react";
 
-// --- 1. Firebase 初始化与配置 (已合并) ---
+// --- 1. Firebase 初始化与配置 ---
 // 启用 Firestore Debug 日志
 setLogLevel('debug');
 
@@ -29,6 +32,7 @@ const auth = getAuth(app);
 
 // Canvas 环境特定代码
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+// 软件数据存储在公共集合中，路径为 artifacts/{appId}/public/data/software
 const PUBLIC_COLLECTION_PATH = `artifacts/${appId}/public/data/software`;
 
 // --- 2. 嵌入 Admin Panel 所需的模拟数据 ---
@@ -94,7 +98,7 @@ const highlight = (text, query) => {
 
 
 // --- 4. Admin Panel Component (用于上传 mock 数据) ---
-
+// 该组件现在被嵌套在 App.jsx 中，并可以直接访问必要的 Firebase 模块，例如 writeBatch
 const AdminPanel = ({ onBack }) => {
     const [status, setStatus] = useState({ message: '等待上传...', type: 'info' });
     const [isUploading, setIsUploading] = useState(false);
@@ -117,6 +121,7 @@ const AdminPanel = ({ onBack }) => {
             const q = query(collection(db, PUBLIC_COLLECTION_PATH));
             const snapshot = await getDocs(q);
             
+            // 使用 writeBatch 进行批量删除 (writeBatch 已经从顶层导入)
             const deleteBatch = writeBatch(db);
             snapshot.docs.forEach((d) => {
                 deleteBatch.delete(doc(db, PUBLIC_COLLECTION_PATH, d.id));
@@ -342,11 +347,13 @@ const App = () => {
       categoriesMap[categoryName].push(s);
     });
     
+    // 如果选择特定的分类，则只显示该分类
     if (selectedCategory !== '全部' && categoriesMap[selectedCategory]) {
         categoriesMap[selectedCategory].sort((a, b) => a.name.localeCompare(b.name));
         return { [selectedCategory]: categoriesMap[selectedCategory] };
     }
     
+    // 否则按所有分类分组并排序
     Object.keys(categoriesMap).forEach(category => {
         categoriesMap[category].sort((a, b) => a.name.localeCompare(b.name));
     });
@@ -358,6 +365,7 @@ const App = () => {
 
   // --- 6. 渲染逻辑 (根据 view 状态切换) ---
   if (view === 'admin') {
+      // 渲染管理员面板
       return <AdminPanel onBack={() => setView('main')} />;
   }
   
