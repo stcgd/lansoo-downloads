@@ -18,4 +18,5 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app); 
 
-// 注意：Firebase 的辅助函数（如 collection, query, onSnapshot 等）将继续在 App.jsx 中直接导入。
+// 注意：Firestore 的辅助函数（如 collection, query, onSnapshot, writeBatch 等）
+// 必须直接从 'firebase/firestore' 导入，而不是从这里导出。
