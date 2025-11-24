@@ -5,9 +5,13 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   
+  // 关键修复：设置应用的公共基础路径（Base Public Path）。
+  // 部署在如 GitHub Pages 等子目录环境时（例如在 /repo-name/ 下），必须配置此项，
+  // 否则应用将无法加载JS/CSS/图片等资源，导致空白页。
+  // 我们根据您观察到的跳转路径，将其设置为 /lansoo-downloads/
+  base: '/lansoo-downloads/', 
+  
   // 修复：针对 Rollup 无法解析 Firebase 模块的错误。
-  // 必须将所有 Firebase 模块显式标记为 external，以确保构建器知道它们是外部依赖，
-  // 从而解决 "Rollup failed to resolve import "firebase/app"" 的问题。
   build: {
     rollupOptions: {
       external: [
