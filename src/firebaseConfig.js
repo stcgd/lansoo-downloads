@@ -1,6 +1,27 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, setLogLevel } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { 
+  getFirestore, 
+  setLogLevel,
+  // 集中导入所有 Firestore 函数
+  collection, 
+  query, 
+  onSnapshot, 
+  getDocs, 
+  addDoc, 
+  updateDoc, 
+  deleteDoc, 
+  doc, 
+  writeBatch 
+} from "firebase/firestore";
+import { 
+  getAuth, 
+  // 集中导入所有 Auth 函数
+  signInAnonymously, 
+  onAuthStateChanged, 
+  signInWithCustomToken, 
+  signInWithEmailAndPassword, 
+  signOut 
+} from "firebase/auth";
 
 // --- 配置已更新 (使用你提供的密钥) ---
 const firebaseConfig = {
@@ -34,4 +55,12 @@ auth = getAuth(app);
 // 开启调试日志，方便排查问题
 setLogLevel('Debug');
 
-export { app, db, auth };
+export { 
+  app, 
+  db, 
+  auth, 
+  // 统一导出所有 Firestore 函数
+  collection, query, onSnapshot, getDocs, addDoc, updateDoc, deleteDoc, doc, writeBatch,
+  // 统一导出所有 Auth 函数
+  signInAnonymously, onAuthStateChanged, signInWithCustomToken, signInWithEmailAndPassword, signOut
+};
