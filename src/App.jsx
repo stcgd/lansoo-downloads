@@ -1,10 +1,8 @@
 import React, { useState, useMemo, useEffect } from "react";
-// --- 1. 确认：只从本地配置导入，不直接从 'firebase/...' 导入 ---
-import { 
-  db, auth, 
-  collection, query, onSnapshot, // Firestore functions
-  signInAnonymously, onAuthStateChanged, signInWithCustomToken // Auth functions
-} from "./firebaseConfig"; 
+// --- 1. 从 Firebase 导入 ---
+import { db, auth } from "./firebaseConfig";
+import { collection, query, onSnapshot } from "firebase/firestore";
+import { signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "firebase/auth";
 import { Sun, Moon, Search, Download } from "lucide-react";
 
 // --- 2. 轮播图图片地址 (保留你的链接) ---
