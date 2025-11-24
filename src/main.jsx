@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import './style.css';
+import Admin from './Admin'; // 导入后台组件
+import './style.css'; 
 
+// 访客密码组件
 const PasswordScreen = ({ onPasswordSubmit }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (password === 'sunway') {
+    if (password === 'sunway') { // 访客密码
       onPasswordSubmit(true);
     } else {
       setError('密码错误，请重试。');
@@ -19,6 +21,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
       <form onSubmit={handleSubmit} className="p-8 bg-gray-800 rounded-lg shadow-xl flex flex-col items-center">
+        {/* 保留你自定义的标题 */}
         <h2 className="text-2xl mb-4 font-bold text-blue-400">密码>暗号>密钥>口令!？</h2>
         <input
           type="password"
@@ -39,7 +42,8 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
   );
 };
 
-const Main = () => {
+// 主路由组件
+const AppRouter = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -57,6 +61,15 @@ const Main = () => {
     }
   };
 
+  // 简单的 URL 路由
+  const { pathname } = window.location;
+
+  if (pathname.startsWith('/admin')) {
+    // 如果是后台路径，渲染 Admin 组件
+    return <Admin />;
+  }
+
+  // 以下是主站的逻辑
   if (isLoading) {
     return <div className="loading-screen">加载中...</div>;
   }
@@ -68,4 +81,4 @@ const Main = () => {
   );
 };
 
-ReactDOM.createRoot(document.getElementById('root')).render(<Main />);
+ReactDOM.createRoot(document.getElementById('root')).render(<AppRouter />);
