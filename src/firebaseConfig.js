@@ -1,9 +1,14 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithCustomToken, signInAnonymously } from 'firebase/auth';
+// 修复 1: 导入 App.jsx 中需要的所有 Auth 函数，包括 onAuthStateChanged
+import { 
+    getAuth, 
+    signInWithCustomToken, 
+    signInAnonymously, 
+    onAuthStateChanged // 确保导入 onAuthStateChanged
+} from 'firebase/auth';
 import { getFirestore, collection, doc, writeBatch, setLogLevel } from 'firebase/firestore';
 
 // --- Canvas Environment Variables ---
-// 确保这些变量在 Canvas 环境中可用
 const firebaseConfig = typeof __firebase_config !== 'undefined' 
     ? JSON.parse(__firebase_config) 
     : {};
@@ -39,5 +44,15 @@ async function authenticateUser() {
 // 在模块加载时立即进行身份验证
 authenticateUser();
 
-// 导出必要的 Firestore 函数和实例，供其他组件使用
-export { db, auth, collection, doc, writeBatch };
+// 修复 2: 导出 App.jsx 中需要的所有 Auth 函数
+export { 
+    db, 
+    auth, 
+    collection, 
+    doc, 
+    writeBatch,
+    // 导出 App.jsx 中需要的 Auth 函数
+    signInAnonymously, 
+    onAuthStateChanged, 
+    signInWithCustomToken 
+};
