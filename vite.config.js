@@ -5,21 +5,18 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   
-  // 核心修复：移除 path 模块的导入和别名配置，以避免与构建环境的默认解析发生冲突。
-  // 同时移除 Rollup 选项中的 'external' 配置，让 Vite/Rollup 正常处理 Firebase 导入。
-  // 这将依赖构建工具使用其默认的 Node 模块解析能力。
-  //
-  // build: {
-  //   rollupOptions: {
-  //     external: [
-  //        ...
-  //     ],
-  //   },
-  // },
-  //
-  // resolve: {
-  //   alias: {
-  //     '@src': path.resolve(__dirname, 'src'),
-  //   },
-  // },
+  // 修复：针对 Rollup 无法解析 Firebase 模块的错误。
+  // 必须将所有 Firebase 模块显式标记为 external，以确保构建器知道它们是外部依赖，
+  // 从而解决 "Rollup failed to resolve import "firebase/app"" 的问题。
+  build: {
+    rollupOptions: {
+      external: [
+        'firebase/app',
+        'firebase/auth',
+        'firebase/firestore',
+      ],
+    },
+  },
+  
+  // 保持配置精简，移除了别名和不必要的路径配置。
 });
