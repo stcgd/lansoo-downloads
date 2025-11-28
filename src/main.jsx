@@ -3,17 +3,9 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./style.css";
 
-import {
-  Globe,
-  Smartphone,
-  Monitor,
-  Laptop,
-  MapPin,
-} from "lucide-react";
+import { Globe, Smartphone, Monitor, Laptop, MapPin } from "lucide-react";
 
-/* -------------------------
-   设备检测：PC / Notebook / Mobile
-------------------------- */
+/* ------------------ 设备检测 ------------------ */
 function detectDevice() {
   const ua = navigator.userAgent.toLowerCase();
   const width = window.innerWidth;
@@ -23,12 +15,9 @@ function detectDevice() {
   return "PC";
 }
 
-/* -------------------------
-   稳定访客信息获取（永不未知）
-------------------------- */
+/* ------------------ 稳定访客信息 ------------------ */
 async function fetchVisitorInfo() {
   try {
-    // ① ipinfo（国内也可访问）
     const r = await fetch("https://ipinfo.io/json?token=46fa1df79e4ef3");
     if (r.ok) {
       const d = await r.json();
@@ -39,67 +28,31 @@ async function fetchVisitorInfo() {
         device: detectDevice(),
       };
     }
-
-    // ② Cloudflare Trace（如部署CF）
     const cf = await fetch("/cdn-cgi/trace").then((res) => res.text());
     const ip = (cf.match(/ip=(.*)/) || [])[1]?.trim();
     const country = (cf.match(/loc=(.*)/) || [])[1]?.trim();
-
-    if (ip) {
-      return {
-        ip,
-        country: country || "未知",
-        city: "",
-        device: detectDevice(),
-      };
-    }
+    if (ip) return { ip, country: country || "未知", city: "", device: detectDevice() };
   } catch (e) {
     console.warn("访客信息获取失败:", e);
   }
-
-  // ③ 永不未知（兜底）
-  return {
-    ip: "未知",
-    country: "未知",
-    city: "",
-    device: detectDevice(),
-  };
+  return { ip: "未知", country: "未知", city: "", device: detectDevice() };
 }
 
-/* -------------------------
-   自动生成 Identicon 头像
-------------------------- */
-function generateAvatar(ip) {
-  const hash = btoa(ip).slice(0, 8);
-  return `https://api.dicebear.com/7.x/identicon/svg?seed=${hash}`;
-}
-
-/* -------------------------
-   底部访客信息条
-------------------------- */
+/* ------------------ 底部访客条 ------------------ */
 const VisitorBar = () => {
   const [info, setInfo] = useState(null);
-  const [avatar, setAvatar] = useState("");
 
   useEffect(() => {
-    fetchVisitorInfo().then((res) => {
-      setInfo(res);
-      setAvatar(generateAvatar(res.ip));
-    });
+    fetchVisitorInfo().then(setInfo);
   }, []);
 
   if (!info) return null;
 
   const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
   const deviceIcon =
-    info.device === "Mobile" ? (
-      <Smartphone size={18} />
-    ) : info.device === "Notebook" ? (
-      <Laptop size={18} />
-    ) : (
-      <Monitor size={18} />
-    );
+    info.device === "Mobile" ? <Smartphone size={18} /> :
+    info.device === "Notebook" ? <Laptop size={18} /> :
+    <Monitor size={18} />;
 
   return (
     <div
@@ -111,20 +64,12 @@ const VisitorBar = () => {
         border: "1px solid rgba(255,255,255,0.2)",
       }}
     >
-      <img
-        src={avatar}
-        className="w-8 h-8 rounded-full shadow"
-        alt="avatar"
-      />
-
       <div className="flex items-center gap-2">
         {deviceIcon} {info.device}
       </div>
-
       <div className="flex items-center gap-2">
         <Globe size={18} /> {info.ip}
       </div>
-
       <div className="flex items-center gap-2">
         <MapPin size={18} /> {info.country} {info.city}
       </div>
@@ -132,23 +77,27 @@ const VisitorBar = () => {
   );
 };
 
-/* -------------------------
-   密码页（动画 + 居中 + 头像）
-------------------------- */
+/* ------------------ 密码页 ------------------ */
 const PasswordScreen = ({ onPasswordSubmit }) => {
   const [password, setPassword] = useState("");
-  const [shake, setShake] = useState(false);
   const [error, setError] = useState("");
+  const [shake, setShake] = useState(false);
+  const [attempts, setAttempts] = useState(0);
+
+  const maxAttempts = 5;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (password === "sunway") {
       onPasswordSubmit(true);
     } else {
       setShake(true);
       setTimeout(() => setShake(false), 500);
-      setError("密码错误，请重试。");
+      setError(`密码错误，请重试（${attempts + 1}/${maxAttempts}）`);
+      setAttempts(attempts + 1);
+      if (attempts + 1 >= maxAttempts) {
+        setError("密码错误次数超过限制，请稍后再试！");
+      }
     }
   };
 
@@ -156,7 +105,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
 
   return (
     <div
-      className="min-h-screen flex flex-col justify-center items-center"
+      className="min-h-screen flex flex-col justify-center items-center px-4"
       style={{
         background: isDark
           ? "linear-gradient(135deg,#0f0f0f,#1a1a2e)"
@@ -167,22 +116,13 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
 
       <form
         onSubmit={handleSubmit}
-        className="p-8 rounded-2xl shadow-2xl border backdrop-blur-xl flex flex-col items-center gap-4 animate-fadeIn"
+        className={`p-8 rounded-2xl shadow-2xl border backdrop-blur-xl flex flex-col items-center gap-4 w-full max-w-sm`}
         style={{
-          width: "90%",
-          maxWidth: "380px",
-          background: isDark
-            ? "rgba(20,20,20,0.55)"
-            : "rgba(255,255,255,0.55)",
+          background: isDark ? "rgba(20,20,20,0.55)" : "rgba(255,255,255,0.55)",
         }}
       >
-        <img
-          src="https://api.dicebear.com/7.x/bottts/svg?seed=Security"
-          className="w-20 h-20 rounded-full shadow mb-2"
-        />
-
         <h2
-          className="text-2xl font-bold"
+          className="text-2xl font-bold text-center"
           style={{ color: isDark ? "#90b4ff" : "#1d3fff" }}
         >
           请输入访问密钥
@@ -190,30 +130,37 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
 
         <input
           type="password"
-          placeholder="输入密码"
+          placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          disabled={attempts >= maxAttempts}
           className={`p-3 w-full rounded-lg shadow-inner border outline-none
             bg-gray-200/50 dark:bg-gray-700/50 focus:ring-2 focus:ring-blue-400
-            ${shake ? "animate-shake" : ""}`}
+            ${shake ? "animate-shake" : ""}
+            relative overflow-hidden`}
         />
+
+        {/* 波纹动画 */}
+        <div
+          className="absolute pointer-events-none w-full h-full top-0 left-0 animate-ping"
+          style={{ opacity: 0.2 }}
+        ></div>
 
         <button
           type="submit"
-          className="w-full py-2 rounded-lg font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-lg transition-all"
+          disabled={attempts >= maxAttempts}
+          className="w-full py-2 rounded-lg font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           登录
         </button>
 
-        {error && <p className="text-red-500">{error}</p>}
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
       </form>
     </div>
   );
 };
 
-/* -------------------------
-   Main
-------------------------- */
+/* ------------------ Main ------------------ */
 const Main = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -226,18 +173,12 @@ const Main = () => {
 
   const handlePasswordSubmit = (status) => {
     setIsAuthenticated(status);
-    if (status) {
-      localStorage.setItem("isAuthenticated", "true");
-    }
+    if (status) localStorage.setItem("isAuthenticated", "true");
   };
 
   if (isLoading) return <div className="text-center mt-20">加载中...</div>;
 
-  return isAuthenticated ? (
-    <App />
-  ) : (
-    <PasswordScreen onPasswordSubmit={handlePasswordSubmit} />
-  );
+  return isAuthenticated ? <App /> : <PasswordScreen onPasswordSubmit={handlePasswordSubmit} />;
 };
 
 ReactDOM.createRoot(document.getElementById("root")).render(<Main />);
