@@ -210,9 +210,38 @@ mark {
 .container.dark .update-time {
   color: #aaa;
 }
-/* 修复暗黑模式下卡片标题不可见问题 */
-.dark .card h3,
-.bg-gray-900 .card h3,
-.bg-gray-800 .card h3 {
-  color: #f3f4f6 !important; /* Tailwind 的 text-gray-100 */
+/* Shake 动dong画huahuahua */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+  75% { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
 }
+
+.shake {
+  animation: shake 0.35s ease-in-out;
+}
+
+/* Ripple 水波纹 */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(0);
+  animation: ripple-animation 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
