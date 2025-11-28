@@ -7,7 +7,6 @@ import { Globe, Smartphone, Monitor, Laptop, MapPin, Clock } from "lucide-react"
 function detectDevice() {
   const ua = navigator.userAgent.toLowerCase();
   const width = window.innerWidth;
-
   if (/mobile|android|iphone/.test(ua)) return "Mobile";
   if (width <= 1440) return "Notebook";
   return "PC";
@@ -30,17 +29,13 @@ async function fetchVisitorInfo() {
 /* ------------------ 底部访客条 ------------------ */
 const VisitorBar = ({ darkMode }) => {
   const [info, setInfo] = useState({ ip: "加载中...", country: "加载中...", city: "", device: "加载中..." });
-  const [time, setTime] = useState(() => {
-    const now = new Date();
-    return now.toLocaleString("zh-CN", { hour12: false });
-  });
+  const [time, setTime] = useState(() => new Date().toLocaleString("zh-CN", { hour12: false }));
 
   useEffect(() => {
     fetchVisitorInfo().then(setInfo);
 
     const timer = setInterval(() => {
-      const now = new Date();
-      setTime(now.toLocaleString("zh-CN", { hour12: false }));
+      setTime(new Date().toLocaleString("zh-CN", { hour12: false }));
     }, 1000);
 
     return () => clearInterval(timer);
@@ -55,14 +50,16 @@ const VisitorBar = ({ darkMode }) => {
 
   return (
     <div className={`
-      fixed bottom-0 left-1/2 -translate-x-1/2 mb-3 rounded-xl shadow-lg p-3 flex items-center gap-4
-      backdrop-blur-xl text-sm z-50
-      ${darkMode ? "bg-gray-800 text-gray-200 border border-gray-600" : "bg-white/70 text-gray-900 border border-gray-300"}
+      fixed bottom-0 left-0 w-full py-2 px-4 flex justify-center z-50
+      ${darkMode ? "bg-gray-900 text-gray-200 border-t border-gray-700" : "bg-gradient-to-r from-blue-400 to-purple-400 text-white"}
+      shadow-lg
     `}>
-      <div className="flex items-center gap-2">{deviceIcon} {info.device}</div>
-      <div className="flex items-center gap-2"><Globe size={18} /> {info.ip}</div>
-      <div className="flex items-center gap-2"><MapPin size={18} /> {info.country} {info.city}</div>
-      <div className="flex items-center gap-2"><Clock size={18} /> {time}</div>
+      <div className="max-w-6xl w-full flex justify-between items-center">
+        <div className="flex items-center gap-2">{deviceIcon} {info.device}</div>
+        <div className="flex items-center gap-2"><Globe size={18} /> {info.ip}</div>
+        <div className="flex items-center gap-2"><MapPin size={18} /> {info.country} {info.city}</div>
+        <div className="flex items-center gap-2"><Clock size={18} /> {time}</div>
+      </div>
     </div>
   );
 };
@@ -78,10 +75,10 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
   const maxAttempts = 5;
   const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-  /* 每输入字符触发水波动画 */
   const handleInput = (e) => {
     setPassword(e.target.value);
 
+    // 波纹动画
     const ripple = document.createElement("span");
     ripple.className = "absolute w-5 h-5 rounded-full bg-blue-400/40 animate-ripple pointer-events-none";
     const rect = inputRef.current.getBoundingClientRect();
@@ -89,9 +86,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
     ripple.style.top = `${Math.random() * (rect.height - 20)}px`;
     inputRef.current.appendChild(ripple);
 
-    setTimeout(() => {
-      ripple.remove();
-    }, 800);
+    setTimeout(() => ripple.remove(), 800);
   };
 
   const handleSubmit = (e) => {
@@ -117,9 +112,8 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
       <form
         onSubmit={handleSubmit}
         className={`
-          relative w-full max-w-sm p-8 rounded-2xl backdrop-blur-xl
-          flex flex-col items-center gap-4 shadow-2xl
-          ${darkMode ? "bg-gray-800/60" : "bg-white/60"}
+          relative w-full max-w-sm p-8 rounded-2xl flex flex-col items-center gap-4 shadow-2xl
+          ${darkMode ? "bg-gray-800/80" : "bg-white/80"}
         `}
       >
         <h2 className={`text-2xl font-bold text-center ${darkMode ? "text-blue-300" : "text-blue-700"}`}>
@@ -134,7 +128,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
             onChange={handleInput}
             disabled={attempts >= maxAttempts}
             className={`
-              relative w-full p-3 rounded-lg border outline-none
+              w-full p-3 rounded-lg border outline-none
               ${darkMode ? "bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-400" : "bg-gray-200 border-gray-300 text-gray-900 placeholder-gray-600"}
               focus:ring-2 focus:ring-blue-400
               ${shake ? "animate-shake" : ""}
@@ -147,7 +141,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
           disabled={attempts >= maxAttempts}
           className={`
             w-full py-2 rounded-lg font-bold
-            ${darkMode ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-blue-600 hover:bg-blue-700 text-white"}
+            bg-blue-600 hover:bg-blue-700 text-white
             shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed
           `}
         >
