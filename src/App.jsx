@@ -300,6 +300,9 @@ const App = () => {
           )
         )}
       </div>
+    </div>
+  );
+};
             {/* ========== 底部版权栏 ========== */}
       <footer className="py-6 text-center border-t border-gray-300 dark:border-gray-700 mt-10">
         <p className="mb-3">
@@ -311,8 +314,4 @@ const App = () => {
           <Cloud className="cursor-pointer" />
         </div>
       </footer>
-    </div>
-  );
-};
-
 export default App;
