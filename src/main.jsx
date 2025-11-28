@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import "./style.css";
-
 import { Globe, Smartphone, Monitor, Laptop, MapPin } from "lucide-react";
 
 /* ------------------ 设备检测 ------------------ */
@@ -15,31 +13,22 @@ function detectDevice() {
   return "PC";
 }
 
-/* ------------------ 稳定访客信息 ------------------ */
+/* ------------------ 访客信息 ------------------ */
 async function fetchVisitorInfo() {
   try {
-    const r = await fetch("https://ipinfo.io/json?token=46fa1df79e4ef3");
-    if (r.ok) {
-      const d = await r.json();
-      return {
-        ip: d.ip || "未知",
-        country: d.country || "未知",
-        city: d.city || "",
-        device: detectDevice(),
-      };
-    }
-    const cf = await fetch("/cdn-cgi/trace").then((res) => res.text());
-    const ip = (cf.match(/ip=(.*)/) || [])[1]?.trim();
-    const country = (cf.match(/loc=(.*)/) || [])[1]?.trim();
-    if (ip) return { ip, country: country || "未知", city: "", device: detectDevice() };
+    const res = await fetch("/cdn-cgi/trace");
+    const text = await res.text();
+    const ip = (text.match(/ip=(.*)/) || [])[1]?.trim() || "未知";
+    const country = (text.match(/loc=(.*)/) || [])[1]?.trim() || "未知";
+    return { ip, country, city: "", device: detectDevice() };
   } catch (e) {
     console.warn("访客信息获取失败:", e);
+    return { ip: "未知", country: "未知", city: "", device: detectDevice() };
   }
-  return { ip: "未知", country: "未知", city: "", device: detectDevice() };
 }
 
 /* ------------------ 底部访客条 ------------------ */
-const VisitorBar = () => {
+const VisitorBar = ({ darkMode }) => {
   const [info, setInfo] = useState(null);
 
   useEffect(() => {
@@ -48,31 +37,22 @@ const VisitorBar = () => {
 
   if (!info) return null;
 
-  const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const deviceIcon =
-    info.device === "Mobile" ? <Smartphone size={18} /> :
-    info.device === "Notebook" ? <Laptop size={18} /> :
-    <Monitor size={18} />;
+    info.device === "Mobile"
+      ? <Smartphone size={18} />
+      : info.device === "Notebook"
+      ? <Laptop size={18} />
+      : <Monitor size={18} />;
 
   return (
-    <div
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 mb-3 rounded-xl shadow-lg p-3 flex items-center gap-4 backdrop-blur-xl text-sm z-50"
-      style={{
-        background: isDark
-          ? "linear-gradient(135deg,rgba(30,30,30,0.7),rgba(60,60,60,0.7))"
-          : "linear-gradient(135deg,rgba(255,255,255,0.7),rgba(240,240,255,0.7))",
-        border: "1px solid rgba(255,255,255,0.2)",
-      }}
-    >
-      <div className="flex items-center gap-2">
-        {deviceIcon} {info.device}
-      </div>
-      <div className="flex items-center gap-2">
-        <Globe size={18} /> {info.ip}
-      </div>
-      <div className="flex items-center gap-2">
-        <MapPin size={18} /> {info.country} {info.city}
-      </div>
+    <div className={`
+      fixed bottom-0 left-1/2 -translate-x-1/2 mb-3 rounded-xl shadow-lg p-3 flex items-center gap-4
+      backdrop-blur-xl text-sm z-50
+      ${darkMode ? "bg-gray-800 text-gray-200 border border-gray-600" : "bg-white/70 text-gray-900 border border-gray-300"}
+    `}>
+      <div className="flex items-center gap-2">{deviceIcon} {info.device}</div>
+      <div className="flex items-center gap-2"><Globe size={18} /> {info.ip}</div>
+      <div className="flex items-center gap-2"><MapPin size={18} /> {info.country} {info.city}</div>
     </div>
   );
 };
@@ -85,73 +65,68 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
   const [attempts, setAttempts] = useState(0);
 
   const maxAttempts = 5;
+  const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password === "sunway") {
       onPasswordSubmit(true);
     } else {
-      setShake(true);
-      setTimeout(() => setShake(false), 500);
-      setError(`密码错误，请重试（${attempts + 1}/${maxAttempts}）`);
-      setAttempts(attempts + 1);
       if (attempts + 1 >= maxAttempts) {
         setError("密码错误次数超过限制，请稍后再试！");
+      } else {
+        setShake(true);
+        setTimeout(() => setShake(false), 400);
+        setError(`密码错误，请重试（${attempts + 1}/${maxAttempts}）`);
+        setAttempts(attempts + 1);
       }
     }
   };
 
-  const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
   return (
-    <div
-      className="min-h-screen flex flex-col justify-center items-center px-4"
-      style={{
-        background: isDark
-          ? "linear-gradient(135deg,#0f0f0f,#1a1a2e)"
-          : "linear-gradient(135deg,#e0e7ff,#f4f4ff)",
-      }}
-    >
-      <VisitorBar />
+    <div className={`min-h-screen flex flex-col justify-center items-center px-4 ${darkMode ? "bg-gray-900" : "bg-gradient-to-br from-blue-100 to-purple-100"}`}>
+      <VisitorBar darkMode={darkMode} />
 
       <form
         onSubmit={handleSubmit}
-        className={`p-8 rounded-2xl shadow-2xl border backdrop-blur-xl flex flex-col items-center gap-4 w-full max-w-sm`}
-        style={{
-          background: isDark ? "rgba(20,20,20,0.55)" : "rgba(255,255,255,0.55)",
-        }}
+        className={`
+          relative w-full max-w-sm p-8 rounded-2xl backdrop-blur-xl
+          flex flex-col items-center gap-4 shadow-2xl
+          ${darkMode ? "bg-gray-800/60" : "bg-white/60"}
+        `}
       >
-        <h2
-          className="text-2xl font-bold text-center"
-          style={{ color: isDark ? "#90b4ff" : "#1d3fff" }}
-        >
-          Enter your credentials to connect to...
+        <h2 className={`text-2xl font-bold text-center ${darkMode ? "text-blue-300" : "text-blue-700"}`}>
+          请输入访问密钥
         </h2>
 
-        <input
-          type="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          disabled={attempts >= maxAttempts}
-          className={`p-3 w-full rounded-lg shadow-inner border outline-none
-            bg-gray-200/50 dark:bg-gray-700/50 focus:ring-2 focus:ring-blue-400
-            ${shake ? "animate-shake" : ""}
-            relative overflow-hidden`}
-        />
-
-        {/* 波纹动画 */}
-        <div
-          className="absolute pointer-events-none w-full h-full top-0 left-0 animate-ping"
-          style={{ opacity: 0.2 }}
-        ></div>
+        <div className="w-full relative">
+          <input
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={attempts >= maxAttempts}
+            className={`
+              relative w-full p-3 rounded-lg border outline-none
+              ${darkMode ? "bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-400" : "bg-gray-200 border-gray-300 text-gray-900 placeholder-gray-600"}
+              focus:ring-2 focus:ring-blue-400
+              ${shake ? "animate-shake" : ""}
+            `}
+          />
+          {/* 输入波纹效果 */}
+          <span className="absolute inset-0 rounded-lg pointer-events-none animate-ping opacity-20 bg-blue-400/20"></span>
+        </div>
 
         <button
           type="submit"
           disabled={attempts >= maxAttempts}
-          className="w-full py-2 rounded-lg font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className={`
+            w-full py-2 rounded-lg font-bold
+            ${darkMode ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-blue-600 hover:bg-blue-700 text-white"}
+            shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed
+          `}
         >
-          Submit
+          登录
         </button>
 
         {error && <p className="text-red-500 text-sm text-center">{error}</p>}
@@ -182,3 +157,5 @@ const Main = () => {
 };
 
 ReactDOM.createRoot(document.getElementById("root")).render(<Main />);
+
+/* ------------------ Tailwind 动画 ------------------ */
