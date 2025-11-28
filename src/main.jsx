@@ -2,16 +2,23 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './style.css';
-import { Globe, Smartphone, Monitor, MapPin, ScanFace } from 'lucide-react';
+import { Globe, Smartphone, Monitor, Laptop, MapPin, ScanFace } from 'lucide-react';
 
-// --- 获取访客信息（IP + 国家城市 + UA） ---
+// --- 获取访客信息 ---
 async function fetchVisitorInfo() {
   try {
     const res = await fetch('https://ipapi.co/json/');
     const data = await res.json();
 
     const ua = navigator.userAgent.toLowerCase();
-    const device = /mobile|android|iphone/.test(ua) ? 'Mobile' : 'PC';
+    const width = window.innerWidth;
+
+    let device = 'PC';
+    if (/mobile|android|iphone/.test(ua)) {
+      device = 'Mobile';
+    } else if (width <= 1440) {
+      device = 'Notebook';
+    }
 
     return {
       ip: data.ip,
@@ -31,7 +38,11 @@ async function fetchVisitorInfo() {
   }
 }
 
-// ---------------- 访客信息条 UI ----------------
+// --- 生成头像（Identicon） ---
+const generateAvatar = (seed) =>
+  `https://api.dicebear.com/9.x/identicon/svg?seed=${seed || "visitor"}`;
+
+// ---------------- 访客条 ----------------
 const VisitorBar = () => {
   const [info, setInfo] = useState(null);
 
@@ -43,31 +54,42 @@ const VisitorBar = () => {
 
   const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
+  const DeviceIcon =
+    info.device === "Mobile"
+      ? Smartphone
+      : info.device === "Notebook"
+      ? Laptop
+      : Monitor;
+
   return (
     <div
-      className="w-full p-3 mb-6 rounded-xl shadow-lg backdrop-blur-md border
-                 flex flex-wrap items-center justify-center gap-4 text-sm"
+      className="fixed bottom-0 left-0 w-full p-3 flex flex-wrap justify-center items-center gap-5 text-sm shadow-lg z-50 backdrop-blur-md border-t"
       style={{
         background: isDark
-          ? 'linear-gradient(135deg, rgba(30,30,30,0.6), rgba(60,60,60,0.6))'
-          : 'linear-gradient(135deg, rgba(255,255,255,0.7), rgba(240,240,255,0.7))',
+          ? "linear-gradient(135deg, rgba(30,30,30,0.7), rgba(60,60,60,0.7))"
+          : "linear-gradient(135deg, rgba(255,255,255,0.75), rgba(240,240,255,0.75))",
       }}
     >
+      {/* Avatar */}
+      <img
+        src={generateAvatar(info.ip)}
+        alt="avatar"
+        className="w-8 h-8 rounded-md shadow"
+      />
+
+      {/* Device */}
+      <div className="flex items-center gap-2">
+        <DeviceIcon size={18} />
+        <span>{info.device}</span>
+      </div>
+
+      {/* IP */}
       <div className="flex items-center gap-2">
         <ScanFace size={18} />
         <span>{info.ip}</span>
       </div>
 
-      <div className="flex items-center gap-2">
-        {info.device === 'Mobile' ? <Smartphone size={18} /> : <Monitor size={18} />}
-        <span>{info.device}</span>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <Globe size={18} />
-        <span>{info.browser.replace(/\\/g, '')}</span>
-      </div>
-
+      {/* Location */}
       <div className="flex items-center gap-2">
         <MapPin size={18} />
         <span>{info.country} {info.city}</span>
@@ -76,7 +98,7 @@ const VisitorBar = () => {
   );
 };
 
-// ---------------- 密码页 UI（重制） ----------------
+// ---------------- Password Screen（加强动画+头像） ----------------
 const PasswordScreen = ({ onPasswordSubmit }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -94,47 +116,53 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-4"
+      className="min-h-screen flex flex-col items-center justify-center px-4 relative"
       style={{
         background: isDark
           ? 'linear-gradient(135deg, #0f0f0f, #1a1a2e)'
           : 'linear-gradient(135deg, #e0e7ff, #f4f4ff)',
       }}
     >
-
       <VisitorBar />
 
       <form
         onSubmit={handleSubmit}
-        className="p-8 rounded-2xl shadow-2xl border backdrop-blur-xl flex flex-col items-center gap-4"
+        className="p-8 rounded-2xl shadow-2xl flex flex-col items-center gap-4 backdrop-blur-xl border max-w-sm w-full"
         style={{
-          width: '90%',
-          maxWidth: '380px',
-          background: isDark
-            ? 'rgba(20,20,20,0.55)'
-            : 'rgba(255,255,255,0.55)',
+          background: isDark ? 'rgba(20,20,20,0.55)' : 'rgba(255,255,255,0.55)',
         }}
       >
-        <h2 className="text-2xl mb-2 font-bold text-center"
-            style={{ color: isDark ? '#90b4ff' : '#1d3fff' }}>
-          请输入通行密钥
+        {/* Avatar */}
+        <img
+          src={generateAvatar("login")}
+          className="w-20 h-20 rounded-xl shadow-xl mb-2 animate-[float_3s_ease-in-out_infinite]"
+        />
+
+        <h2
+          className="text-2xl mb-2 font-semibold text-center"
+          style={{ color: isDark ? '#9bb6ff' : '#1d3fff' }}
+        >
+          输入访问密钥
         </h2>
 
+        {/* 密码框（动画） */}
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="输入密码"
-          className="p-3 w-full rounded-lg shadow-inner border outline-none 
-                     bg-gray-200/50 dark:bg-gray-700/50 focus:ring-2 focus:ring-blue-400"
+          placeholder="••••••••"
+          className="p-3 w-full rounded-lg shadow-inner border outline-none
+                     bg-gray-200/60 dark:bg-gray-700/60 focus:ring-2 
+                     focus:ring-blue-400 transition-transform duration-150
+                     focus:scale-[1.03]"
         />
 
         <button
           type="submit"
           className="w-full py-2 rounded-lg font-bold transition-all shadow-lg
-                     bg-blue-600 hover:bg-blue-700 text-white"
+                     bg-blue-600 hover:bg-blue-700 text-white active:scale-95"
         >
-          登录
+          进入
         </button>
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
@@ -161,9 +189,7 @@ const Main = () => {
     }
   };
 
-  if (isLoading) {
-    return <div className="text-center mt-20">加载中...</div>;
-  }
+  if (isLoading) return <div className="text-center mt-20">加载中...</div>;
 
   return isAuthenticated ? <App /> : <PasswordScreen onPasswordSubmit={handlePasswordSubmit} />;
 };
