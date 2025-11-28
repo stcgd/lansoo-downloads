@@ -1,7 +1,18 @@
-// Full App.jsx with device detection + styled visitor bar + Cloudflare-safe IP fetching
+// App.jsx - 带粒子背景 + 标签云 + 美化访客条 + 软件列表
 import React, { useState, useMemo, useEffect } from "react";
 import softwareData from "./data/software.json";
-import { Sun, Moon, Search, Download, Smartphone, Monitor, MapPin, Globe } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  Search,
+  Download,
+  Smartphone,
+  Monitor,
+  MapPin,
+  Globe,
+} from "lucide-react";
+import Particles from "react-tsparticles";
+import { loadFull } from "tsparticles";
 
 // 轮播图素材
 const banners = [
@@ -10,6 +21,18 @@ const banners = [
   { id: 3, img: "https://img.lansoo.com/file/1756974574144_banner1.png" },
   { id: 4, img: "https://img.lansoo.com/file/1742103223415_PixPin_2025-03-16_13-33-33.png" },
   { id: 5, img: "https://img.lansoo.com/file/1757093478872_image.png" },
+];
+
+// 标签云示例
+const tags = [
+  { name: "远程工具", weight: 8 },
+  { name: "视频编辑", weight: 5 },
+  { name: "压缩解压", weight: 6 },
+  { name: "传输工具", weight: 7 },
+  { name: "截图软件", weight: 4 },
+  { name: "聊天工具", weight: 6 },
+  { name: "浏览器插件", weight: 5 },
+  { name: "编程辅助", weight: 7 },
 ];
 
 // 正则转义
@@ -30,7 +53,6 @@ const App = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [isManualToggle, setIsManualToggle] = useState(false);
   const [currentBanner, setCurrentBanner] = useState(0);
-
   const [visitorInfo, setVisitorInfo] = useState({
     ip: "",
     country: "",
@@ -39,14 +61,14 @@ const App = () => {
     time: "",
   });
 
-  // 检测访问设备类型（User-Agent）
+  // 检测设备类型
   useEffect(() => {
     const ua = navigator.userAgent.toLowerCase();
     const isMobile = /mobile|android|iphone|ipad/.test(ua);
     setVisitorInfo((v) => ({ ...v, device: isMobile ? "Mobile" : "PC" }));
   }, []);
 
-  // 时间自动更新
+  // 自动更新时间
   useEffect(() => {
     const tick = () => {
       const now = new Date().toLocaleString("zh-CN", { hour12: false });
@@ -57,17 +79,14 @@ const App = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Cloudflare 获取 IP + 国家 + 补充城市
+  // Cloudflare IP + 国家 + 补充城市
   useEffect(() => {
     const getGeo = async () => {
       try {
         const res = await fetch("/cdn-cgi/trace");
         const text = await res.text();
-
         const ip = text.match(/ip=(.*)/)?.[1]?.trim() || "";
         const country = text.match(/loc=(.*)/)?.[1]?.trim() || "";
-
-        // 补充城市（Cloudflare 只提供国家）
         let city = "";
         try {
           const geo = await fetch(`https://ipapi.co/${ip}/json/`).then((r) =>
@@ -75,7 +94,6 @@ const App = () => {
           );
           city = geo.city || "";
         } catch {}
-
         setVisitorInfo((v) => ({ ...v, ip, country, city }));
       } catch (e) {
         console.error("获取访客信息失败", e);
@@ -93,12 +111,11 @@ const App = () => {
     return () => clearInterval(t);
   }, []);
 
-  // 系统时间自动切换 dark 模式
+  // 自动暗黑模式
   useEffect(() => {
     if (isManualToggle) return;
     const hour = new Date().getHours();
-    const isNight = hour >= 18 || hour < 6;
-    setDarkMode(isNight);
+    setDarkMode(hour >= 18 || hour < 6);
   }, [isManualToggle]);
 
   const toggleDarkMode = () => {
@@ -129,17 +146,61 @@ const App = () => {
     };
   }, [query, selectedCategory]);
 
+  const particlesInit = async (main) => await loadFull(main);
+
   return (
     <div
       className={
         darkMode
-          ? "bg-gray-900 text-white min-h-screen"
-          : "bg-gray-100 text-gray-900 min-h-screen"
+          ? "bg-gray-900 text-white min-h-screen relative"
+          : "bg-gray-100 text-gray-900 min-h-screen relative"
       }
     >
-      {/* 美化后的访客信息条（渐变 + 图标 + 阴影 + 自动暗黑） */}
+      {/* 粒子背景 */}
+      <Particles
+        id="tsparticles"
+        init={particlesInit}
+        options={{
+          fullScreen: { enable: false },
+          background: { color: "transparent" },
+          fpsLimit: 60,
+          interactivity: {
+            events: { onHover: { enable: true, mode: "repulse" } },
+            modes: { repulse: { distance: 120 } },
+          },
+          particles: {
+            color: { value: darkMode ? "#ffffff" : "#1e3a8a" },
+            links: { enable: true, color: darkMode ? "#888" : "#93c5fd", distance: 120 },
+            move: { enable: true, speed: 0.8, outModes: "out" },
+            number: { value: 40, density: { enable: true, area: 800 } },
+            opacity: { value: 0.5 },
+            shape: { type: "circle" },
+            size: { value: { min: 2, max: 5 } },
+          },
+        }}
+        className="absolute top-0 left-0 w-full h-full z-0"
+      />
+
+      {/* 标签云 */}
+      <div className="absolute top-0 left-0 w-full h-64 flex flex-wrap justify-center items-center gap-4 z-10 pointer-events-none">
+        {tags.map((tag, idx) => {
+          const size = 12 + tag.weight * 2;
+          const color = darkMode ? "#66b3ff" : "#1e3a8a";
+          return (
+            <span
+              key={idx}
+              style={{ fontSize: `${size}px`, color }}
+              className="transition-transform duration-200 hover:scale-125"
+            >
+              {tag.name}
+            </span>
+          );
+        })}
+      </div>
+
+      {/* 访客信息条 */}
       <div
-        className={`w-full text-sm py-3 shadow-md transition-colors ${
+        className={`w-full text-sm py-3 shadow-md transition-colors absolute bottom-0 z-20 ${
           darkMode
             ? "bg-gradient-to-r from-gray-800 to-gray-700 text-gray-200 shadow-gray-900"
             : "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-blue-300"
@@ -154,23 +215,20 @@ const App = () => {
             )}
             {visitorInfo.device}
           </span>
-
           <span className="flex items-center gap-1">
             <Globe className="w-4 h-4" />
             {visitorInfo.ip || "加载中..."}
           </span>
-
           <span className="flex items-center gap-1">
             <MapPin className="w-4 h-4" />
             {visitorInfo.country || "未知"} {visitorInfo.city || ""}
           </span>
-
           <span>⏱ {visitorInfo.time}</span>
         </div>
       </div>
 
       {/* 顶部导航 */}
-      <div className="flex justify-between items-center p-4 max-w-6xl mx-auto">
+      <div className="flex justify-between items-center p-4 max-w-6xl mx-auto relative z-10">
         <h1 className="text-xl font-bold">
           Software Downloads 在线技术支持@微信：qq2269404909
         </h1>
@@ -187,7 +245,7 @@ const App = () => {
       </div>
 
       {/* 轮播图 */}
-      <div className="max-w-6xl mx-auto px-4 mb-6">
+      <div className="max-w-6xl mx-auto px-4 mb-6 relative z-10">
         <div className="relative w-full overflow-hidden rounded-2xl shadow-lg h-48 sm:h-64">
           {banners.map((b, i) => (
             <img
@@ -199,7 +257,6 @@ const App = () => {
               }`}
             />
           ))}
-
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
             {banners.map((_, i) => (
               <span
@@ -215,7 +272,7 @@ const App = () => {
       </div>
 
       {/* 搜索 + 分类 */}
-      <div className="max-w-6xl mx-auto px-4 mb-8">
+      <div className="max-w-6xl mx-auto px-4 mb-8 relative z-10">
         <div className="flex items-center bg-white dark:bg-gray-800 rounded-xl shadow-md px-4 py-2 mb-4">
           <Search className="w-5 h-5 text-gray-400 mr-3" />
           <input
@@ -245,7 +302,7 @@ const App = () => {
       </div>
 
       {/* 软件列表 */}
-      <div className="max-w-6xl mx-auto px-4 pb-10">
+      <div className="max-w-6xl mx-auto px-4 pb-10 relative z-10">
         {Object.values(filteredData).flat().length === 0 ? (
           <div className="text-center text-gray-500 dark:text-gray-400 p-8">
             没有找到与“{query}”相关的软件，请尝试其他关键词。
