@@ -1,27 +1,26 @@
+// Full App.jsx with auto dark-mode visitor bar and Cloudflare-safe IP fetching
 import React, { useState, useMemo, useEffect } from "react";
 import softwareData from "./data/software.json";
 import { Sun, Moon, Search, Download } from "lucide-react";
 
 // 轮播图图片地址
 const banners = [
-  { id: 1, img: "https://img.lansoo.com/file/1756974582770_banner3.png" },
-  { id: 2, img: "https://img.lansoo.com/file/1757093612782_image.png" },
-  { id: 3, img: "https://img.lansoo.com/file/1756974574144_banner1.png" },
-  { id: 4, img: "https://img.lansoo.com/file/1742103223415_PixPin_2025-03-16_13-33-33.png" },
-  { id: 5, img: "https://img.lansoo.com/file/1757093478872_image.png" },
+  { id: 1, img: "https://img.lansoo.com/file/1756974582770_banner3.png" },
+  { id: 2, img: "https://img.lansoo.com/file/1757093612782_image.png" },
+  { id: 3, img: "https://img.lansoo.com/file/1756974574144_banner1.png" },
+  { id: 4, img: "https://img.lansoo.com/file/1742103223415_PixPin_2025-03-16_13-33-33.png" },
+  { id: 5, img: "https://img.lansoo.com/file/1757093478872_image.png" },
 ];
 
 // 正则表达式转义函数
-const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&");
 
 // 高亮搜索结果的函数
 const highlight = (text, query) => {
   if (!query) return text;
   const regex = new RegExp(`(${escapeRegExp(query)})`, "gi");
   const parts = text.split(regex);
-  return parts.map((part, i) =>
-    regex.test(part) ? <mark key={i}>{part}</mark> : part
-  );
+  return parts.map((part, i) => (regex.test(part) ? <mark key={i}>{part}</mark> : part));
 };
 
 const App = () => {
@@ -30,15 +29,61 @@ const App = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [isManualToggle, setIsManualToggle] = useState(false);
   const [currentBanner, setCurrentBanner] = useState(0);
-  
+
+  const [visitorInfo, setVisitorInfo] = useState({
+    ip: "",
+    country: "",
+    city: "",
+    time: "",
+  });
+
+  // 时间自动更新
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const formatted = now.toLocaleString("zh-CN", { hour12: false });
+      setVisitorInfo((prev) => ({ ...prev, time: formatted }));
+    };
+
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Cloudflare 获取访客 IP + 国家 + 城市
+  useEffect(() => {
+    const getGeo = async () => {
+      try {
+        const res = await fetch("/cdn-cgi/trace");
+        const text = await res.text();
+
+        const ipMatch = text.match(/ip=(.*)/);
+        const locMatch = text.match(/loc=(.*)/);
+
+        const ip = ipMatch ? ipMatch[1].trim() : "";
+        const country = locMatch ? locMatch[1].trim() : "";
+
+        // Cloudflare 只提供国家，城市需要 Geo API（可选）
+        let city = "";
+        try {
+          const geo = await fetch(`https://ipapi.co/${ip}/json/`).then((r) => r.json());
+          city = geo.city || "";
+        } catch {}
+
+        setVisitorInfo((prev) => ({ ...prev, ip, country, city }));
+      } catch (e) {
+        console.error("获取访客信息失败", e);
+      }
+    };
+
+    getGeo();
+  }, []);
+
   // 轮播图自动播放
   useEffect(() => {
-    const interval = setInterval(
-      () => {
-        setCurrentBanner((prev) => (prev + 1) % banners.length);
-      },
-      4000
-    );
+    const interval = setInterval(() => {
+      setCurrentBanner((prev) => (prev + 1) % banners.length);
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
@@ -55,7 +100,7 @@ const App = () => {
     setDarkMode(!darkMode);
     setIsManualToggle(true);
   };
-  
+
   const allCategories = ["全部", ...Object.keys(softwareData)];
 
   const filterSoftware = (software) => {
@@ -80,6 +125,21 @@ const App = () => {
 
   return (
     <div className={darkMode ? "bg-gray-900 text-white min-h-screen font-sans" : "bg-gray-100 text-gray-900 min-h-screen font-sans"}>
+      {/* 访问信息条（自动暗黑模式） */}
+      <div
+        className={`w-full text-sm py-2 transition-colors ${
+          darkMode ? "bg-gray-800 text-gray-200" : "bg-blue-600 text-white"
+        }`}
+      >
+        <div className="max-w-6xl mx-auto px-4 flex flex-wrap justify-between">
+          <span>访问 IP：{visitorInfo.ip || "加载中..."}</span>
+          <span>
+            位置：{visitorInfo.country || "未知"} {visitorInfo.city || ""}
+          </span>
+          <span>访问时间：{visitorInfo.time}</span>
+        </div>
+      </div>
+
       {/* 顶部导航 */}
       <div className="flex justify-between items-center p-4 max-w-6xl mx-auto">
         <h1 className="text-xl font-bold">Software Downloads 在线技术支持@微信：qq2269404909</h1>
@@ -100,7 +160,7 @@ const App = () => {
               src={banner.img}
               alt={`banner-${index}`}
               className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
-                index === currentBanner ? 'opacity-100' : 'opacity-0'
+                index === currentBanner ? "opacity-100" : "opacity-0"
               }`}
             />
           ))}
@@ -111,9 +171,7 @@ const App = () => {
                 className={`w-2 h-2 rounded-full cursor-pointer transition-colors ${
                   currentBanner === index ? "bg-white" : "bg-gray-400"
                 }`}
-                onClick={() => {
-                   setCurrentBanner(index);
-                }}
+                onClick={() => setCurrentBanner(index)}
               ></span>
             ))}
           </div>
@@ -158,7 +216,6 @@ const App = () => {
         ) : (
           Object.entries(filteredData).map(([category, softwares]) => (
             <div key={category} className="mb-6">
-              {/* 锁定标题颜色为蓝色，确保它在日夜模式下都可见 */}
               <h2 className="text-2xl font-bold mb-4 border-b border-gray-300 dark:border-gray-600 pb-2 text-blue-600">
                 {category}
               </h2>
@@ -175,17 +232,17 @@ const App = () => {
                       {highlight(s.description, query)}
                     </p>
                     <div className="flex items-center justify-between mt-4">
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {`更新日期: ${s.updatedAt}`}
-                        </span>
-                        <a
-                          href={s.downloadUrl}
-                          className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition-colors"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Download className="w-4 h-4" />
-                        </a>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {`更新日期: ${s.updatedAt}`}
+                      </span>
+                      <a
+                        href={s.downloadUrl}
+                        className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition-colors"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Download className="w-4 h-4" />
+                      </a>
                     </div>
                   </div>
                 ))}
