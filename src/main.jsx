@@ -29,22 +29,22 @@ async function fetchVisitorInfo() {
 
 /* ------------------ 底部访客条 ------------------ */
 const VisitorBar = ({ darkMode }) => {
-  const [info, setInfo] = useState(null);
-  const [time, setTime] = useState("");
+  const [info, setInfo] = useState({ ip: "加载中...", country: "加载中...", city: "", device: "加载中..." });
+  const [time, setTime] = useState(() => {
+    const now = new Date();
+    return now.toLocaleString("zh-CN", { hour12: false });
+  });
 
   useEffect(() => {
     fetchVisitorInfo().then(setInfo);
 
     const timer = setInterval(() => {
       const now = new Date();
-      const formatted = now.toLocaleString("zh-CN", { hour12: false });
-      setTime(formatted);
+      setTime(now.toLocaleString("zh-CN", { hour12: false }));
     }, 1000);
 
     return () => clearInterval(timer);
   }, []);
-
-  if (!info) return null;
 
   const deviceIcon =
     info.device === "Mobile"
