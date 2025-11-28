@@ -1,4 +1,3 @@
-// Full App.jsx with device detection + styled visitor bar + Cloudflare-safe IP fetching
 import React, { useState, useMemo, useEffect } from "react";
 import softwareData from "./data/software.json";
 import { Sun, Moon, Search, Download, Smartphone, Monitor, MapPin, Globe } from "lucide-react";
@@ -12,15 +11,26 @@ const banners = [
   { id: 5, img: "https://img.lansoo.com/file/1757093478872_image.png" },
 ];
 
-// 正则转义
+// 转义
 const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 // 搜索高亮
 const highlight = (text, query) => {
   if (!query) return text;
+
   const regex = new RegExp(`(${escapeRegExp(query)})`, "gi");
+
   return text.split(regex).map((part, i) =>
-    regex.test(part) ? <mark key={i}>{part}</mark> : part
+    regex.test(part) ? (
+      <mark
+        key={i}
+        className="bg-yellow-300 dark:bg-yellow-600 text-black dark:text-white px-1 rounded"
+      >
+        {part}
+      </mark>
+    ) : (
+      part
+    )
   );
 };
 
@@ -57,7 +67,7 @@ const App = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Cloudflare 获取 IP + 城市
+  // Cloudflare IP
   useEffect(() => {
     const getGeo = async () => {
       try {
@@ -83,10 +93,7 @@ const App = () => {
 
   // 自动轮播
   useEffect(() => {
-    const t = setInterval(
-      () => setCurrentBanner((n) => (n + 1) % banners.length),
-      4000
-    );
+    const t = setInterval(() => setCurrentBanner((n) => (n + 1) % banners.length), 4000);
     return () => clearInterval(t);
   }, []);
 
@@ -94,7 +101,8 @@ const App = () => {
   useEffect(() => {
     if (isManualToggle) return;
     const hour = new Date().getHours();
-    setDarkMode(hour >= 18 || hour < 6);
+    const isNight = hour >= 18 || hour < 6;
+    setDarkMode(isNight);
   }, [isManualToggle]);
 
   const toggleDarkMode = () => {
@@ -112,18 +120,31 @@ const App = () => {
     );
   };
 
+  // 瀑布流模式专用
   const filteredData = useMemo(() => {
     if (selectedCategory === "全部") {
-      const all = Object.values(softwareData).flat();
-      return { 全部: all.filter(filterSoftware) };
+      // 返回所有分类（带分类标题）
+      const result = {};
+      for (const cat of Object.keys(softwareData)) {
+        result[cat] = softwareData[cat].filter(filterSoftware);
+      }
+      return result;
     }
+
+    // 返回单一分类
     return {
       [selectedCategory]: (softwareData[selectedCategory] || []).filter(filterSoftware),
     };
   }, [query, selectedCategory]);
 
   return (
-    <div className={darkMode ? "bg-gray-900 text-white min-h-screen" : "bg-gray-100 text-gray-900 min-h-screen"}>
+    <div
+      className={
+        darkMode
+          ? "bg-gray-900 text-white min-h-screen"
+          : "bg-gray-100 text-gray-900 min-h-screen"
+      }
+    >
       {/* 访客条 */}
       <div
         className={`w-full text-sm py-3 shadow-md transition-colors ${
@@ -149,31 +170,36 @@ const App = () => {
 
           <span className="flex items-center gap-1">
             <MapPin className="w-4 h-4" />
-            {visitorInfo.country || "未知"} {visitorInfo.city}
+            {visitorInfo.country || "未知"} {visitorInfo.city || ""}
           </span>
 
           <span>⏱ {visitorInfo.time}</span>
         </div>
       </div>
 
-      {/* 顶部导航 */}
+      {/* 顶栏 */}
       <div className="flex justify-between items-center p-4 max-w-6xl mx-auto">
         <h1 className="text-xl font-bold">Software Downloads 在线技术支持@微信：qq2269404909</h1>
         <button
           onClick={toggleDarkMode}
           className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:scale-110 transition-transform"
         >
-          {darkMode ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-gray-800" />}
+          {darkMode ? (
+            <Sun className="w-5 h-5 text-yellow-400" />
+          ) : (
+            <Moon className="w-5 h-5 text-gray-800" />
+          )}
         </button>
       </div>
 
-      {/* 轮播图 */}
+      {/* 轮播 */}
       <div className="max-w-6xl mx-auto px-4 mb-6">
         <div className="relative w-full overflow-hidden rounded-2xl shadow-lg h-48 sm:h-64">
           {banners.map((b, i) => (
             <img
               key={b.id}
               src={b.img}
+              alt=""
               className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
                 i === currentBanner ? "opacity-100" : "opacity-0"
               }`}
@@ -194,7 +220,7 @@ const App = () => {
         </div>
       </div>
 
-      {/* 搜索 + 分类 */}
+      {/* 搜索框 */}
       <div className="max-w-6xl mx-auto px-4 mb-8">
         <div className="flex items-center bg-white dark:bg-gray-800 rounded-xl shadow-md px-4 py-2 mb-4">
           <Search className="w-5 h-5 text-gray-400 mr-3" />
@@ -207,6 +233,7 @@ const App = () => {
           />
         </div>
 
+        {/* 分类按钮 */}
         <div className="flex flex-wrap gap-2">
           {allCategories.map((cat) => (
             <button
@@ -224,50 +251,53 @@ const App = () => {
         </div>
       </div>
 
-      {/* 软件列表 */}
+      {/* 软件卡片区域 */}
       <div className="max-w-6xl mx-auto px-4 pb-10">
         {Object.values(filteredData).flat().length === 0 ? (
           <div className="text-center text-gray-500 dark:text-gray-400 p-8">
             没有找到与“{query}”相关的软件，请尝试其他关键词。
           </div>
         ) : (
-          Object.entries(filteredData).map(([category, softwares]) => (
-            <div key={category}>
-              <h2 className="text-2xl font-bold mb-4 border-b pb-2 text-blue-600">
-                {category}
-              </h2>
+          Object.entries(filteredData).map(([category, softwares]) =>
+            softwares.length > 0 ? (
+              <div key={category} className="mb-10">
+                <h2 className="text-2xl font-bold mb-4 border-b pb-2 text-blue-600">
+                  {category}
+                </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {softwares.map((s, i) => (
-                  <div
-                    key={i}
-                    className="software-card bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md hover:shadow-xl transition"
-                  >
-                    <h3 className="text-lg font-semibold mb-1">
-                      {highlight(s.name, query)}
-                    </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {softwares.map((s, i) => (
+                    <div
+                      key={i}
+                      className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md hover:shadow-xl transition"
+                    >
+                      <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">
+                        {highlight(s.name, query)}
+                      </h3>
 
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                      {highlight(s.description, query)}
-                    </p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                        {highlight(s.description, query)}
+                      </p>
 
-                    <div className="flex items-center justify-between mt-4">
-                      <span className="text-xs text-gray-500">更新日期: {s.updatedAt}</span>
-
-                      <a
-                        href={s.downloadUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="download-btn ripple flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                      >
-                        <Download className="w-4 h-4" />
-                      </a>
+                      <div className="flex items-center justify-between mt-4">
+                        <span className="text-xs text-gray-500">
+                          更新日期: {s.updatedAt}
+                        </span>
+                        <a
+                          href={s.downloadUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        >
+                          <Download className="w-4 h-4" />
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          ))
+            ) : null
+          )
         )}
       </div>
     </div>
