@@ -210,3 +210,9 @@ mark {
 .container.dark .update-time {
   color: #aaa;
 }
+/* 修复暗黑模式下卡片标题不可见问题 */
+.dark .card h3,
+.bg-gray-900 .card h3,
+.bg-gray-800 .card h3 {
+  color: #f3f4f6 !important; /* Tailwind 的 text-gray-100 */
+}
