@@ -303,15 +303,5 @@ const App = () => {
     </div>
   );
 };
-            {/* ========== 底部版权栏 ========== */}
-      <footer className="py-6 text-center border-t border-gray-300 dark:border-gray-700 mt-10">
-        <p className="mb-3">
-          © 2003-2025 Lansoo@远程技术支持
-        </p>
-        <div className="flex justify-center gap-6 text-lg">
-          <Github className="cursor-pointer" />
-          <GoogleIcon />
-          <Cloud className="cursor-pointer" />
-        </div>
-      </footer>
+
 export default App;
