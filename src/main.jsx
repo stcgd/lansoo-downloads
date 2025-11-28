@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { Globe, Smartphone, Monitor, Laptop, MapPin } from "lucide-react";
+import { Globe, Smartphone, Monitor, Laptop, MapPin, Clock } from "lucide-react";
 
 /* ------------------ 设备检测 ------------------ */
 function detectDevice() {
@@ -30,9 +30,18 @@ async function fetchVisitorInfo() {
 /* ------------------ 底部访客条 ------------------ */
 const VisitorBar = ({ darkMode }) => {
   const [info, setInfo] = useState(null);
+  const [time, setTime] = useState("");
 
   useEffect(() => {
     fetchVisitorInfo().then(setInfo);
+
+    const timer = setInterval(() => {
+      const now = new Date();
+      const formatted = now.toLocaleString("zh-CN", { hour12: false });
+      setTime(formatted);
+    }, 1000);
+
+    return () => clearInterval(timer);
   }, []);
 
   if (!info) return null;
@@ -53,6 +62,7 @@ const VisitorBar = ({ darkMode }) => {
       <div className="flex items-center gap-2">{deviceIcon} {info.device}</div>
       <div className="flex items-center gap-2"><Globe size={18} /> {info.ip}</div>
       <div className="flex items-center gap-2"><MapPin size={18} /> {info.country} {info.city}</div>
+      <div className="flex items-center gap-2"><Clock size={18} /> {time}</div>
     </div>
   );
 };
@@ -63,9 +73,26 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
   const [error, setError] = useState("");
   const [shake, setShake] = useState(false);
   const [attempts, setAttempts] = useState(0);
+  const inputRef = useRef(null);
 
   const maxAttempts = 5;
   const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+  /* 每输入字符触发水波动画 */
+  const handleInput = (e) => {
+    setPassword(e.target.value);
+
+    const ripple = document.createElement("span");
+    ripple.className = "absolute w-5 h-5 rounded-full bg-blue-400/40 animate-ripple pointer-events-none";
+    const rect = inputRef.current.getBoundingClientRect();
+    ripple.style.left = `${Math.random() * (rect.width - 20)}px`;
+    ripple.style.top = `${Math.random() * (rect.height - 20)}px`;
+    inputRef.current.appendChild(ripple);
+
+    setTimeout(() => {
+      ripple.remove();
+    }, 800);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -77,7 +104,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
       } else {
         setShake(true);
         setTimeout(() => setShake(false), 400);
-        setError(`Incorrect password, please try again（${attempts + 1}/${maxAttempts}）`);
+        setError(`Incorrect password, please try again (${attempts + 1}/${maxAttempts})`);
         setAttempts(attempts + 1);
       }
     }
@@ -99,12 +126,12 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
           Enter credentials to connect...
         </h2>
 
-        <div className="w-full relative">
+        <div ref={inputRef} className="relative w-full">
           <input
             type="password"
             placeholder="••••••••"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={handleInput}
             disabled={attempts >= maxAttempts}
             className={`
               relative w-full p-3 rounded-lg border outline-none
@@ -113,8 +140,6 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
               ${shake ? "animate-shake" : ""}
             `}
           />
-          {/* 输入波纹效果 */}
-          <span className="absolute inset-0 rounded-lg pointer-events-none animate-ping opacity-20 bg-blue-400/20"></span>
         </div>
 
         <button
@@ -159,3 +184,20 @@ const Main = () => {
 ReactDOM.createRoot(document.getElementById("root")).render(<Main />);
 
 /* ------------------ Tailwind 动画 ------------------ */
+<style>
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    75% { transform: translateX(-6px); }
+    100% { transform: translateX(0); }
+  }
+  .animate-shake { animation: shake 0.4s ease; }
+
+  @keyframes ripple {
+    0% { transform: scale(0); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 0.2; }
+    100% { transform: scale(1); opacity: 0; }
+  }
+  .animate-ripple { animation: ripple 0.8s ease-out forwards; }
+</style>
