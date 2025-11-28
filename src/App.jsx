@@ -1,16 +1,7 @@
 // Full App.jsx with device detection + styled visitor bar + Cloudflare-safe IP fetching
 import React, { useState, useMemo, useEffect } from "react";
 import softwareData from "./data/software.json";
-import {
-  Sun,
-  Moon,
-  Search,
-  Download,
-  Smartphone,
-  Monitor,
-  MapPin,
-  Globe,
-} from "lucide-react";
+import { Sun, Moon, Search, Download, Smartphone, Monitor, MapPin, Globe } from "lucide-react";
 
 // 轮播图素材
 const banners = [
@@ -48,28 +39,6 @@ const App = () => {
     time: "",
   });
 
-  // Ripple 注入（只运行一次）
-  useEffect(() => {
-    document.addEventListener("click", function (e) {
-      const target = e.target.closest(".ripple");
-      if (!target) return;
-
-      const circle = document.createElement("span");
-      const diameter = Math.max(target.clientWidth, target.clientHeight);
-      const radius = diameter / 2;
-
-      circle.style.width = circle.style.height = `${diameter}px`;
-      circle.style.left = `${e.clientX - target.offsetLeft - radius}px`;
-      circle.style.top = `${e.clientY - target.offsetTop - radius}px`;
-      circle.classList.add("ripple-effect");
-
-      const ripple = target.getElementsByClassName("ripple-effect")[0];
-      if (ripple) ripple.remove();
-
-      target.appendChild(circle);
-    });
-  }, []);
-
   // 检测访问设备类型
   useEffect(() => {
     const ua = navigator.userAgent.toLowerCase();
@@ -88,7 +57,7 @@ const App = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Cloudflare 获取 IP + 国家 + 城市
+  // Cloudflare 获取 IP + 城市
   useEffect(() => {
     const getGeo = async () => {
       try {
@@ -98,12 +67,9 @@ const App = () => {
         const ip = text.match(/ip=(.*)/)?.[1]?.trim() || "";
         const country = text.match(/loc=(.*)/)?.[1]?.trim() || "";
 
-        // 获取城市（Cloudflare 不提供）
         let city = "";
         try {
-          const geo = await fetch(`https://ipapi.co/${ip}/json/`).then((r) =>
-            r.json()
-          );
+          const geo = await fetch(`https://ipapi.co/${ip}/json/`).then((r) => r.json());
           city = geo.city || "";
         } catch {}
 
@@ -124,12 +90,11 @@ const App = () => {
     return () => clearInterval(t);
   }, []);
 
-  // 自动夜间模式
+  // 自动 dark 模式
   useEffect(() => {
     if (isManualToggle) return;
     const hour = new Date().getHours();
-    const isNight = hour >= 18 || hour < 6;
-    setDarkMode(isNight);
+    setDarkMode(hour >= 18 || hour < 6);
   }, [isManualToggle]);
 
   const toggleDarkMode = () => {
@@ -150,25 +115,16 @@ const App = () => {
   const filteredData = useMemo(() => {
     if (selectedCategory === "全部") {
       const all = Object.values(softwareData).flat();
-      const f = all.filter(filterSoftware);
-      return { 全部: f };
+      return { 全部: all.filter(filterSoftware) };
     }
     return {
-      [selectedCategory]: (softwareData[selectedCategory] || []).filter(
-        filterSoftware
-      ),
+      [selectedCategory]: (softwareData[selectedCategory] || []).filter(filterSoftware),
     };
   }, [query, selectedCategory]);
 
   return (
-    <div
-      className={
-        darkMode
-          ? "bg-gray-900 text-white min-h-screen"
-          : "bg-gray-100 text-gray-900 min-h-screen"
-      }
-    >
-      {/* 顶部访客条 */}
+    <div className={darkMode ? "bg-gray-900 text-white min-h-screen" : "bg-gray-100 text-gray-900 min-h-screen"}>
+      {/* 访客条 */}
       <div
         className={`w-full text-sm py-3 shadow-md transition-colors ${
           darkMode
@@ -193,27 +149,21 @@ const App = () => {
 
           <span className="flex items-center gap-1">
             <MapPin className="w-4 h-4" />
-            {visitorInfo.country || "未知"} {visitorInfo.city || ""}
+            {visitorInfo.country || "未知"} {visitorInfo.city}
           </span>
 
           <span>⏱ {visitorInfo.time}</span>
         </div>
       </div>
 
-      {/* 顶部标题 */}
+      {/* 顶部导航 */}
       <div className="flex justify-between items-center p-4 max-w-6xl mx-auto">
-        <h1 className="text-xl font-bold">
-          Software Downloads 在线技术支持@微信：qq2269404909
-        </h1>
+        <h1 className="text-xl font-bold">Software Downloads 在线技术支持@微信：qq2269404909</h1>
         <button
           onClick={toggleDarkMode}
-          className="p-2 ripple rounded-full bg-gray-200 dark:bg-gray-700 hover:scale-110 transition-transform"
+          className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:scale-110 transition-transform"
         >
-          {darkMode ? (
-            <Sun className="w-5 h-5 text-yellow-400" />
-          ) : (
-            <Moon className="w-5 h-5 text-gray-800" />
-          )}
+          {darkMode ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-gray-800" />}
         </button>
       </div>
 
@@ -224,7 +174,6 @@ const App = () => {
             <img
               key={b.id}
               src={b.img}
-              alt=""
               className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
                 i === currentBanner ? "opacity-100" : "opacity-0"
               }`}
@@ -245,7 +194,7 @@ const App = () => {
         </div>
       </div>
 
-      {/* 搜索框 + 分类 */}
+      {/* 搜索 + 分类 */}
       <div className="max-w-6xl mx-auto px-4 mb-8">
         <div className="flex items-center bg-white dark:bg-gray-800 rounded-xl shadow-md px-4 py-2 mb-4">
           <Search className="w-5 h-5 text-gray-400 mr-3" />
@@ -254,7 +203,7 @@ const App = () => {
             placeholder="搜索软件名称或描述..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full bg-transparent outline-none"
+            className="w-full bg-transparent outline-none text-gray-900 dark:text-white"
           />
         </div>
 
@@ -263,7 +212,7 @@ const App = () => {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-1.5 ripple rounded-full text-sm font-medium ${
+              className={`px-4 py-1.5 rounded-full text-sm font-medium ${
                 selectedCategory === cat
                   ? "bg-blue-600 text-white"
                   : "bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
@@ -292,24 +241,24 @@ const App = () => {
                 {softwares.map((s, i) => (
                   <div
                     key={i}
-                    className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md hover:shadow-xl transition hover:shake"
+                    className="software-card bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md hover:shadow-xl transition"
                   >
-                    <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-gray-100">
+                    <h3 className="text-lg font-semibold mb-1">
                       {highlight(s.name, query)}
                     </h3>
+
                     <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
                       {highlight(s.description, query)}
                     </p>
 
                     <div className="flex items-center justify-between mt-4">
-                      <span className="text-xs text-gray-500">
-                        更新日期: {s.updatedAt}
-                      </span>
+                      <span className="text-xs text-gray-500">更新日期: {s.updatedAt}</span>
+
                       <a
                         href={s.downloadUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex ripple items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        className="download-btn ripple flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                       >
                         <Download className="w-4 h-4" />
                       </a>
