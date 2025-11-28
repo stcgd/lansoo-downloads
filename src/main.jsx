@@ -73,11 +73,11 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
       onPasswordSubmit(true);
     } else {
       if (attempts + 1 >= maxAttempts) {
-        setError("密码错误次数超过限制，请稍后再试！");
+        setError("The number of incorrect password attempts has exceeded the limit. Please try again later!");
       } else {
         setShake(true);
         setTimeout(() => setShake(false), 400);
-        setError(`密码错误，请重试（${attempts + 1}/${maxAttempts}）`);
+        setError(`Incorrect password, please try again（${attempts + 1}/${maxAttempts}）`);
         setAttempts(attempts + 1);
       }
     }
@@ -96,7 +96,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
         `}
       >
         <h2 className={`text-2xl font-bold text-center ${darkMode ? "text-blue-300" : "text-blue-700"}`}>
-          请输入访问密钥
+          Enter credentials to connect...
         </h2>
 
         <div className="w-full relative">
@@ -126,7 +126,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
             shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed
           `}
         >
-          登录
+          Submit
         </button>
 
         {error && <p className="text-red-500 text-sm text-center">{error}</p>}
