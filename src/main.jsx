@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import { Globe, Smartphone, Monitor, Laptop, MapPin, Clock } from "lucide-react";
+import { Globe, Smartphone, Monitor, Laptop, MapPin } from "lucide-react";
 
 /* ------------------ 设备检测 ------------------ */
 function detectDevice() {
   const ua = navigator.userAgent.toLowerCase();
   const width = window.innerWidth;
+
   if (/mobile|android|iphone/.test(ua)) return "Mobile";
   if (width <= 1440) return "Notebook";
   return "PC";
@@ -28,18 +29,13 @@ async function fetchVisitorInfo() {
 
 /* ------------------ 底部访客条 ------------------ */
 const VisitorBar = ({ darkMode }) => {
-  const [info, setInfo] = useState({ ip: "加载中...", country: "加载中...", city: "", device: "加载中..." });
-  const [time, setTime] = useState(() => new Date().toLocaleString("zh-CN", { hour12: false }));
+  const [info, setInfo] = useState(null);
 
   useEffect(() => {
     fetchVisitorInfo().then(setInfo);
-
-    const timer = setInterval(() => {
-      setTime(new Date().toLocaleString("zh-CN", { hour12: false }));
-    }, 1000);
-
-    return () => clearInterval(timer);
   }, []);
+
+  if (!info) return null;
 
   const deviceIcon =
     info.device === "Mobile"
@@ -50,16 +46,13 @@ const VisitorBar = ({ darkMode }) => {
 
   return (
     <div className={`
-      fixed bottom-0 left-0 w-full py-2 px-4 flex justify-center z-50
-      ${darkMode ? "bg-gray-900 text-gray-200 border-t border-gray-700" : "bg-gradient-to-r from-blue-400 to-purple-400 text-white"}
-      shadow-lg
+      fixed bottom-0 left-1/2 -translate-x-1/2 mb-3 rounded-xl shadow-lg p-3 flex items-center gap-4
+      backdrop-blur-xl text-sm z-50
+      ${darkMode ? "bg-gray-800 text-gray-200 border border-gray-600" : "bg-white/70 text-gray-900 border border-gray-300"}
     `}>
-      <div className="max-w-6xl w-full flex justify-between items-center">
-        <div className="flex items-center gap-2">{deviceIcon} {info.device}</div>
-        <div className="flex items-center gap-2"><Globe size={18} /> {info.ip}</div>
-        <div className="flex items-center gap-2"><MapPin size={18} /> {info.country} {info.city}</div>
-        <div className="flex items-center gap-2"><Clock size={18} /> {time}</div>
-      </div>
+      <div className="flex items-center gap-2">{deviceIcon} {info.device}</div>
+      <div className="flex items-center gap-2"><Globe size={18} /> {info.ip}</div>
+      <div className="flex items-center gap-2"><MapPin size={18} /> {info.country} {info.city}</div>
     </div>
   );
 };
@@ -70,24 +63,9 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
   const [error, setError] = useState("");
   const [shake, setShake] = useState(false);
   const [attempts, setAttempts] = useState(0);
-  const inputRef = useRef(null);
 
   const maxAttempts = 5;
   const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-  const handleInput = (e) => {
-    setPassword(e.target.value);
-
-    // 波纹动画
-    const ripple = document.createElement("span");
-    ripple.className = "absolute w-5 h-5 rounded-full bg-blue-400/40 animate-ripple pointer-events-none";
-    const rect = inputRef.current.getBoundingClientRect();
-    ripple.style.left = `${Math.random() * (rect.width - 20)}px`;
-    ripple.style.top = `${Math.random() * (rect.height - 20)}px`;
-    inputRef.current.appendChild(ripple);
-
-    setTimeout(() => ripple.remove(), 800);
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -99,7 +77,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
       } else {
         setShake(true);
         setTimeout(() => setShake(false), 400);
-        setError(`Incorrect password, please try again (${attempts + 1}/${maxAttempts})`);
+        setError(`Incorrect password, please try again（${attempts + 1}/${maxAttempts}）`);
         setAttempts(attempts + 1);
       }
     }
@@ -112,28 +90,31 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
       <form
         onSubmit={handleSubmit}
         className={`
-          relative w-full max-w-sm p-8 rounded-2xl flex flex-col items-center gap-4 shadow-2xl
-          ${darkMode ? "bg-gray-800/80" : "bg-white/80"}
+          relative w-full max-w-sm p-8 rounded-2xl backdrop-blur-xl
+          flex flex-col items-center gap-4 shadow-2xl
+          ${darkMode ? "bg-gray-800/60" : "bg-white/60"}
         `}
       >
         <h2 className={`text-2xl font-bold text-center ${darkMode ? "text-blue-300" : "text-blue-700"}`}>
           Enter credentials to connect...
         </h2>
 
-        <div ref={inputRef} className="relative w-full">
+        <div className="w-full relative">
           <input
             type="password"
             placeholder="••••••••"
             value={password}
-            onChange={handleInput}
+            onChange={(e) => setPassword(e.target.value)}
             disabled={attempts >= maxAttempts}
             className={`
-              w-full p-3 rounded-lg border outline-none
+              relative w-full p-3 rounded-lg border outline-none
               ${darkMode ? "bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-400" : "bg-gray-200 border-gray-300 text-gray-900 placeholder-gray-600"}
               focus:ring-2 focus:ring-blue-400
               ${shake ? "animate-shake" : ""}
             `}
           />
+          {/* 输入波纹效果 */}
+          <span className="absolute inset-0 rounded-lg pointer-events-none animate-ping opacity-20 bg-blue-400/20"></span>
         </div>
 
         <button
@@ -141,7 +122,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
           disabled={attempts >= maxAttempts}
           className={`
             w-full py-2 rounded-lg font-bold
-            bg-blue-600 hover:bg-blue-700 text-white
+            ${darkMode ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-blue-600 hover:bg-blue-700 text-white"}
             shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed
           `}
         >
@@ -178,20 +159,3 @@ const Main = () => {
 ReactDOM.createRoot(document.getElementById("root")).render(<Main />);
 
 /* ------------------ Tailwind 动画 ------------------ */
-<style>
-  @keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-6px); }
-    50% { transform: translateX(6px); }
-    75% { transform: translateX(-6px); }
-    100% { transform: translateX(0); }
-  }
-  .animate-shake { animation: shake 0.4s ease; }
-
-  @keyframes ripple {
-    0% { transform: scale(0); opacity: 0.5; }
-    50% { transform: scale(1.2); opacity: 0.2; }
-    100% { transform: scale(1); opacity: 0; }
-  }
-  .animate-ripple { animation: ripple 0.8s ease-out forwards; }
-</style>
