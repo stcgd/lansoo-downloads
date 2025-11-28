@@ -212,36 +212,45 @@ mark {
 }
 /* Shake 动dong画huahuahua */
 @keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-3px); }
-  50% { transform: translateX(3px); }
-  75% { transform: translateX(-3px); }
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(-3px); }
+  40%  { transform: translateX(3px); }
+  60%  { transform: translateX(-3px); }
+  80%  { transform: translateX(3px); }
   100% { transform: translateX(0); }
 }
 
-.shake {
-  animation: shake 0.35s ease-in-out;
+.software-card:hover {
+  animation: shake 0.35s linear;
 }
 
-/* Ripple 水波纹 */
+/* ==== ripple 点击涟漪效果（按钮通用） ==== */
 .ripple {
   position: relative;
   overflow: hidden;
 }
 
-.ripple-effect {
+.ripple::after {
+  content: "";
   position: absolute;
+  background: rgba(255,255,255,0.5);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
-  transform: scale(0);
-  animation: ripple-animation 0.6s linear;
-  pointer-events: none;
+  width: 10px;
+  height: 10px;
+  opacity: 0;
+  transform: scale(1);
+  transition: opacity 0.5s, transform 0.5s;
 }
 
-@keyframes ripple-animation {
-  to {
-    transform: scale(4);
-    opacity: 0;
-  }
+.ripple:active::after {
+  opacity: 1;
+  transform: scale(15);
+  transition: 0s;
+}
+
+/* 让下载按钮启用涟漪 */
+.download-btn {
+  position: relative;
+  overflow: hidden;
 }
 
