@@ -125,7 +125,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
           className="text-2xl font-bold text-center"
           style={{ color: isDark ? "#90b4ff" : "#1d3fff" }}
         >
-          请输入访问密钥
+          Enter your credentials to connect to...
         </h2>
 
         <input
@@ -151,7 +151,7 @@ const PasswordScreen = ({ onPasswordSubmit }) => {
           disabled={attempts >= maxAttempts}
           className="w-full py-2 rounded-lg font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          登录
+          Submit
         </button>
 
         {error && <p className="text-red-500 text-sm text-center">{error}</p>}
