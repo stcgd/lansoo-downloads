@@ -1,9 +1,9 @@
-// Full App.jsx with auto dark-mode visitor bar and Cloudflare-safe IP fetching
+// Full App.jsx with device detection + styled visitor bar + Cloudflare-safe IP fetching
 import React, { useState, useMemo, useEffect } from "react";
 import softwareData from "./data/software.json";
-import { Sun, Moon, Search, Download } from "lucide-react";
+import { Sun, Moon, Search, Download, Smartphone, Monitor, MapPin, Globe } from "lucide-react";
 
-// 轮播图图片地址
+// 轮播图素材
 const banners = [
   { id: 1, img: "https://img.lansoo.com/file/1756974582770_banner3.png" },
   { id: 2, img: "https://img.lansoo.com/file/1757093612782_image.png" },
@@ -12,15 +12,16 @@ const banners = [
   { id: 5, img: "https://img.lansoo.com/file/1757093478872_image.png" },
 ];
 
-// 正则表达式转义函数
-const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&");
+// 正则转义
+const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-// 高亮搜索结果的函数
+// 搜索高亮
 const highlight = (text, query) => {
   if (!query) return text;
   const regex = new RegExp(`(${escapeRegExp(query)})`, "gi");
-  const parts = text.split(regex);
-  return parts.map((part, i) => (regex.test(part) ? <mark key={i}>{part}</mark> : part));
+  return text.split(regex).map((part, i) =>
+    regex.test(part) ? <mark key={i}>{part}</mark> : part
+  );
 };
 
 const App = () => {
@@ -34,151 +35,186 @@ const App = () => {
     ip: "",
     country: "",
     city: "",
+    device: "",
     time: "",
   });
 
+  // 检测访问设备类型（User-Agent）
+  useEffect(() => {
+    const ua = navigator.userAgent.toLowerCase();
+    const isMobile = /mobile|android|iphone|ipad/.test(ua);
+    setVisitorInfo((v) => ({ ...v, device: isMobile ? "Mobile" : "PC" }));
+  }, []);
+
   // 时间自动更新
   useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const formatted = now.toLocaleString("zh-CN", { hour12: false });
-      setVisitorInfo((prev) => ({ ...prev, time: formatted }));
+    const tick = () => {
+      const now = new Date().toLocaleString("zh-CN", { hour12: false });
+      setVisitorInfo((v) => ({ ...v, time: now }));
     };
-
-    updateTime();
-    const timer = setInterval(updateTime, 1000);
+    tick();
+    const timer = setInterval(tick, 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // Cloudflare 获取访客 IP + 国家 + 城市
+  // Cloudflare 获取 IP + 国家 + 补充城市
   useEffect(() => {
     const getGeo = async () => {
       try {
         const res = await fetch("/cdn-cgi/trace");
         const text = await res.text();
 
-        const ipMatch = text.match(/ip=(.*)/);
-        const locMatch = text.match(/loc=(.*)/);
+        const ip = text.match(/ip=(.*)/)?.[1]?.trim() || "";
+        const country = text.match(/loc=(.*)/)?.[1]?.trim() || "";
 
-        const ip = ipMatch ? ipMatch[1].trim() : "";
-        const country = locMatch ? locMatch[1].trim() : "";
-
-        // Cloudflare 只提供国家，城市需要 Geo API（可选）
+        // 补充城市（Cloudflare 只提供国家）
         let city = "";
         try {
-          const geo = await fetch(`https://ipapi.co/${ip}/json/`).then((r) => r.json());
+          const geo = await fetch(`https://ipapi.co/${ip}/json/`).then((r) =>
+            r.json()
+          );
           city = geo.city || "";
         } catch {}
 
-        setVisitorInfo((prev) => ({ ...prev, ip, country, city }));
+        setVisitorInfo((v) => ({ ...v, ip, country, city }));
       } catch (e) {
         console.error("获取访客信息失败", e);
       }
     };
-
     getGeo();
   }, []);
 
-  // 轮播图自动播放
+  // 自动轮播
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentBanner((prev) => (prev + 1) % banners.length);
-    }, 4000);
-    return () => clearInterval(interval);
+    const t = setInterval(
+      () => setCurrentBanner((n) => (n + 1) % banners.length),
+      4000
+    );
+    return () => clearInterval(t);
   }, []);
 
-  // 根据系统时间设置暗黑模式
+  // 系统时间自动切换 dark 模式
   useEffect(() => {
-    if (!isManualToggle) {
-      const hour = new Date().getHours();
-      const isNight = hour >= 18 || hour < 6;
-      setDarkMode(isNight);
-    }
+    if (isManualToggle) return;
+    const hour = new Date().getHours();
+    const isNight = hour >= 18 || hour < 6;
+    setDarkMode(isNight);
   }, [isManualToggle]);
 
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
+    setDarkMode((s) => !s);
     setIsManualToggle(true);
   };
 
   const allCategories = ["全部", ...Object.keys(softwareData)];
 
   const filterSoftware = (software) => {
-    const lowerQuery = query.toLowerCase();
+    const q = query.toLowerCase();
     return (
-      software.name.toLowerCase().includes(lowerQuery) ||
-      software.description.toLowerCase().includes(lowerQuery)
+      software.name.toLowerCase().includes(q) ||
+      software.description.toLowerCase().includes(q)
     );
   };
 
   const filteredData = useMemo(() => {
     if (selectedCategory === "全部") {
-      const allSoftware = Object.values(softwareData).flat();
-      const filtered = allSoftware.filter(filterSoftware);
-      return { 全部: filtered };
-    } else {
-      const categorySoftwares = softwareData[selectedCategory] || [];
-      const filtered = categorySoftwares.filter(filterSoftware);
-      return { [selectedCategory]: filtered };
+      const all = Object.values(softwareData).flat();
+      const f = all.filter(filterSoftware);
+      return { 全部: f };
     }
+    return {
+      [selectedCategory]: (softwareData[selectedCategory] || []).filter(
+        filterSoftware
+      ),
+    };
   }, [query, selectedCategory]);
 
   return (
-    <div className={darkMode ? "bg-gray-900 text-white min-h-screen font-sans" : "bg-gray-100 text-gray-900 min-h-screen font-sans"}>
-      {/* 访问信息条（自动暗黑模式） */}
+    <div
+      className={
+        darkMode
+          ? "bg-gray-900 text-white min-h-screen"
+          : "bg-gray-100 text-gray-900 min-h-screen"
+      }
+    >
+      {/* 美化后的访客信息条（渐变 + 图标 + 阴影 + 自动暗黑） */}
       <div
-        className={`w-full text-sm py-2 transition-colors ${
-          darkMode ? "bg-gray-800 text-gray-200" : "bg-blue-600 text-white"
+        className={`w-full text-sm py-3 shadow-md transition-colors ${
+          darkMode
+            ? "bg-gradient-to-r from-gray-800 to-gray-700 text-gray-200 shadow-gray-900"
+            : "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-blue-300"
         }`}
       >
-        <div className="max-w-6xl mx-auto px-4 flex flex-wrap justify-between">
-          <span>访问 IP：{visitorInfo.ip || "加载中..."}</span>
-          <span>
-            位置：{visitorInfo.country || "未知"} {visitorInfo.city || ""}
+        <div className="max-w-6xl mx-auto px-4 flex flex-wrap justify-between gap-2 items-center">
+          <span className="flex items-center gap-1">
+            {visitorInfo.device === "Mobile" ? (
+              <Smartphone className="w-4 h-4" />
+            ) : (
+              <Monitor className="w-4 h-4" />
+            )}
+            {visitorInfo.device}
           </span>
-          <span>访问时间：{visitorInfo.time}</span>
+
+          <span className="flex items-center gap-1">
+            <Globe className="w-4 h-4" />
+            {visitorInfo.ip || "加载中..."}
+          </span>
+
+          <span className="flex items-center gap-1">
+            <MapPin className="w-4 h-4" />
+            {visitorInfo.country || "未知"} {visitorInfo.city || ""}
+          </span>
+
+          <span>⏱ {visitorInfo.time}</span>
         </div>
       </div>
 
       {/* 顶部导航 */}
       <div className="flex justify-between items-center p-4 max-w-6xl mx-auto">
-        <h1 className="text-xl font-bold">Software Downloads 在线技术支持@微信：qq2269404909</h1>
+        <h1 className="text-xl font-bold">
+          Software Downloads 在线技术支持@微信：qq2269404909
+        </h1>
         <button
           onClick={toggleDarkMode}
           className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:scale-110 transition-transform"
         >
-          {darkMode ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-gray-800" />}
+          {darkMode ? (
+            <Sun className="w-5 h-5 text-yellow-400" />
+          ) : (
+            <Moon className="w-5 h-5 text-gray-800" />
+          )}
         </button>
       </div>
 
-      {/* 轮播图部分 */}
+      {/* 轮播图 */}
       <div className="max-w-6xl mx-auto px-4 mb-6">
         <div className="relative w-full overflow-hidden rounded-2xl shadow-lg h-48 sm:h-64">
-          {banners.map((banner, index) => (
+          {banners.map((b, i) => (
             <img
-              key={banner.id}
-              src={banner.img}
-              alt={`banner-${index}`}
-              className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
-                index === currentBanner ? "opacity-100" : "opacity-0"
+              key={b.id}
+              src={b.img}
+              alt=""
+              className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
+                i === currentBanner ? "opacity-100" : "opacity-0"
               }`}
             />
           ))}
+
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-            {banners.map((_, index) => (
+            {banners.map((_, i) => (
               <span
-                key={index}
-                className={`w-2 h-2 rounded-full cursor-pointer transition-colors ${
-                  currentBanner === index ? "bg-white" : "bg-gray-400"
+                key={i}
+                className={`w-2 h-2 rounded-full cursor-pointer ${
+                  currentBanner === i ? "bg-white" : "bg-gray-400"
                 }`}
-                onClick={() => setCurrentBanner(index)}
+                onClick={() => setCurrentBanner(i)}
               ></span>
             ))}
           </div>
         </div>
       </div>
 
-      {/* 搜索和分类部分 */}
+      {/* 搜索 + 分类 */}
       <div className="max-w-6xl mx-auto px-4 mb-8">
         <div className="flex items-center bg-white dark:bg-gray-800 rounded-xl shadow-md px-4 py-2 mb-4">
           <Search className="w-5 h-5 text-gray-400 mr-3" />
@@ -187,18 +223,19 @@ const App = () => {
             placeholder="搜索软件名称或描述..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full bg-transparent outline-none text-gray-900 dark:text-white"
+            className="w-full bg-transparent outline-none"
           />
         </div>
+
         <div className="flex flex-wrap gap-2">
           {allCategories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              className={`px-4 py-1.5 rounded-full text-sm font-medium ${
                 selectedCategory === cat
                   ? "bg-blue-600 text-white"
-                  : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600"
+                  : "bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
               }`}
             >
               {cat}
@@ -207,7 +244,7 @@ const App = () => {
         </div>
       </div>
 
-      {/* 软件卡片列表 */}
+      {/* 软件列表 */}
       <div className="max-w-6xl mx-auto px-4 pb-10">
         {Object.values(filteredData).flat().length === 0 ? (
           <div className="text-center text-gray-500 dark:text-gray-400 p-8">
@@ -215,31 +252,31 @@ const App = () => {
           </div>
         ) : (
           Object.entries(filteredData).map(([category, softwares]) => (
-            <div key={category} className="mb-6">
-              <h2 className="text-2xl font-bold mb-4 border-b border-gray-300 dark:border-gray-600 pb-2 text-blue-600">
+            <div key={category}>
+              <h2 className="text-2xl font-bold mb-4 border-b pb-2 text-blue-600">
                 {category}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {softwares.map((s, idx) => (
+                {softwares.map((s, i) => (
                   <div
-                    key={idx}
-                    className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md hover:shadow-xl transition-shadow"
+                    key={i}
+                    className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md hover:shadow-xl transition"
                   >
-                    <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">
+                    <h3 className="text-lg font-semibold mb-1">
                       {highlight(s.name, query)}
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
                       {highlight(s.description, query)}
                     </p>
                     <div className="flex items-center justify-between mt-4">
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
-                        {`更新日期: ${s.updatedAt}`}
+                      <span className="text-xs text-gray-500">
+                        更新日期: {s.updatedAt}
                       </span>
                       <a
                         href={s.downloadUrl}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition-colors"
                         target="_blank"
                         rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                       >
                         <Download className="w-4 h-4" />
                       </a>
