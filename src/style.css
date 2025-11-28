@@ -210,47 +210,4 @@ mark {
 .container.dark .update-time {
   color: #aaa;
 }
-/* Shake 动dong画huahuahua */
-@keyframes shake {
-  0%   { transform: translateX(0); }
-  20%  { transform: translateX(-3px); }
-  40%  { transform: translateX(3px); }
-  60%  { transform: translateX(-3px); }
-  80%  { transform: translateX(3px); }
-  100% { transform: translateX(0); }
-}
-
-.software-card:hover {
-  animation: shake 0.35s linear;
-}
-
-/* ==== ripple 点击涟漪效果（按钮通用） ==== */
-.ripple {
-  position: relative;
-  overflow: hidden;
-}
-
-.ripple::after {
-  content: "";
-  position: absolute;
-  background: rgba(255,255,255,0.5);
-  border-radius: 50%;
-  width: 10px;
-  height: 10px;
-  opacity: 0;
-  transform: scale(1);
-  transition: opacity 0.5s, transform 0.5s;
-}
-
-.ripple:active::after {
-  opacity: 1;
-  transform: scale(15);
-  transition: 0s;
-}
-
-/* 让下载按钮启用涟漪 */
-.download-btn {
-  position: relative;
-  overflow: hidden;
-}
 
