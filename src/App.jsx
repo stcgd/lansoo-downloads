@@ -374,7 +374,7 @@ const App = () => {
 
       {/* 版权浮窗 */}
       <div className="text-center py-4 text-sm text-gray-500 dark:text-gray-400">
-        © 2003–2025 LanSoo 远程技术支持
+        CopyRight© 2003–2025 LanSoo 远程技术支持All Right Reserved  ||本站所有分享收藏软件工具除特别声明外，均采用 CC BY-NC-SA 4.0 许可协议。
       </div>
     </div>
   );
