@@ -350,7 +350,7 @@ const App = () => {
 
         {/* Google */}
         <button
-          onClick={() => window.open("https://google.com", "_blank")}
+          onClick={() => window.open("https://blog.lansoo.com", "_blank")}
           className="w-12 h-12 rounded-full bg-red-500 text-white flex items-center justify-center 
                      shadow-lg hover:scale-110 transition"
         >
