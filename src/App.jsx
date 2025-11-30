@@ -1,6 +1,20 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import softwareData from "./data/software.json";
-import { Sun, Moon, Search, Download, Smartphone, Monitor, MapPin, Globe } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  Search,
+  Download,
+  Smartphone,
+  Monitor,
+  MapPin,
+  Globe,
+  Send,
+  Star,
+  Github,
+  ChevronUp,
+  Cloud,
+} from "lucide-react";
 
 // 轮播图素材
 const banners = [
@@ -17,9 +31,7 @@ const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 // 搜索高亮
 const highlight = (text, query) => {
   if (!query) return text;
-
   const regex = new RegExp(`(${escapeRegExp(query)})`, "gi");
-
   return text.split(regex).map((part, i) =>
     regex.test(part) ? (
       <mark
@@ -41,6 +53,8 @@ const App = () => {
   const [isManualToggle, setIsManualToggle] = useState(false);
   const [currentBanner, setCurrentBanner] = useState(0);
 
+  const searchRef = useRef(null);
+
   const [visitorInfo, setVisitorInfo] = useState({
     ip: "",
     country: "",
@@ -49,7 +63,7 @@ const App = () => {
     time: "",
   });
 
-  // 检测访问设备类型
+  // 设备类型
   useEffect(() => {
     const ua = navigator.userAgent.toLowerCase();
     const isMobile = /mobile|android|iphone|ipad/.test(ua);
@@ -67,7 +81,7 @@ const App = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Cloudflare IP
+  // 获取 IP/城市
   useEffect(() => {
     const getGeo = async () => {
       try {
@@ -76,8 +90,8 @@ const App = () => {
 
         const ip = text.match(/ip=(.*)/)?.[1]?.trim() || "";
         const country = text.match(/loc=(.*)/)?.[1]?.trim() || "";
-
         let city = "";
+
         try {
           const geo = await fetch(`https://ipapi.co/${ip}/json/`).then((r) => r.json());
           city = geo.city || "";
@@ -97,7 +111,7 @@ const App = () => {
     return () => clearInterval(t);
   }, []);
 
-  // 自动 dark 模式
+  // 自动 Dark
   useEffect(() => {
     if (isManualToggle) return;
     const hour = new Date().getHours();
@@ -120,18 +134,14 @@ const App = () => {
     );
   };
 
-  // 瀑布流模式专用
   const filteredData = useMemo(() => {
     if (selectedCategory === "全部") {
-      // 返回所有分类（带分类标题）
       const result = {};
       for (const cat of Object.keys(softwareData)) {
         result[cat] = softwareData[cat].filter(filterSoftware);
       }
       return result;
     }
-
-    // 返回单一分类
     return {
       [selectedCategory]: (softwareData[selectedCategory] || []).filter(filterSoftware),
     };
@@ -177,23 +187,8 @@ const App = () => {
         </div>
       </div>
 
-      {/* 顶栏 */}
-      <div className="flex justify-between items-center p-4 max-w-6xl mx-auto">
-        <h1 className="text-xl font-bold">Software Downloads 在线技术支持@微信：qq2269404909</h1>
-        <button
-          onClick={toggleDarkMode}
-          className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:scale-110 transition-transform"
-        >
-          {darkMode ? (
-            <Sun className="w-5 h-5 text-yellow-400" />
-          ) : (
-            <Moon className="w-5 h-5 text-gray-800" />
-          )}
-        </button>
-      </div>
-
       {/* 轮播 */}
-      <div className="max-w-6xl mx-auto px-4 mb-6">
+      <div className="max-w-6xl mx-auto px-4 mt-4 mb-6">
         <div className="relative w-full overflow-hidden rounded-2xl shadow-lg h-48 sm:h-64">
           {banners.map((b, i) => (
             <img
@@ -221,7 +216,7 @@ const App = () => {
       </div>
 
       {/* 搜索框 */}
-      <div className="max-w-6xl mx-auto px-4 mb-8">
+      <div ref={searchRef} className="max-w-6xl mx-auto px-4 mb-8">
         <div className="flex items-center bg-white dark:bg-gray-800 rounded-xl shadow-md px-4 py-2 mb-4">
           <Search className="w-5 h-5 text-gray-400 mr-3" />
           <input
@@ -252,7 +247,7 @@ const App = () => {
       </div>
 
       {/* 软件卡片区域 */}
-      <div className="max-w-6xl mx-auto px-4 pb-10">
+      <div className="max-w-6xl mx-auto px-4 pb-24">
         {Object.values(filteredData).flat().length === 0 ? (
           <div className="text-center text-gray-500 dark:text-gray-400 p-8">
             没有找到与“{query}”相关的软件，请尝试其他关键词。
@@ -299,6 +294,87 @@ const App = () => {
             ) : null
           )
         )}
+      </div>
+
+      {/* 右下角悬浮菜单 */}
+      <div className="fixed right-4 bottom-6 flex flex-col gap-3 z-50">
+
+        {/* 深色模式 */}
+        <button
+          onClick={toggleDarkMode}
+          className="w-12 h-12 rounded-full bg-gray-800 dark:bg-yellow-400 text-white dark:text-black 
+                     flex items-center justify-center shadow-lg hover:scale-110 transition"
+        >
+          {darkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
+        </button>
+
+        {/* 搜索定位 */}
+        <button
+          onClick={() => searchRef.current?.scrollIntoView({ behavior: "smooth" })}
+          className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center 
+                     shadow-lg hover:scale-110 transition"
+        >
+          <Search className="w-6 h-6" />
+        </button>
+
+        {/* Telegram */}
+        <button
+          onClick={() => window.open("https://t.me/sunwaychan", "_blank")}
+          className="w-12 h-12 rounded-full bg-sky-500 text-white flex items-center justify-center 
+                     shadow-lg hover:scale-110 transition"
+        >
+          <Send className="w-6 h-6" />
+        </button>
+
+        {/* 收藏本站 */}
+        <button
+          onClick={() => alert("请按 Ctrl + D 收藏本站")}
+          className="w-12 h-12 rounded-full bg-green-600 text-white flex items-center justify-center 
+                     shadow-lg hover:scale-110 transition"
+        >
+          <Star className="w-6 h-6" />
+        </button>
+
+        {/* GitHub */}
+        <button
+          onClick={() => window.open("https://github.com", "_blank")}
+          className="w-12 h-12 rounded-full bg-gray-900 text-white flex items-center justify-center 
+                     shadow-lg hover:scale-110 transition"
+        >
+          <Github className="w-6 h-6" />
+        </button>
+
+        {/* Google */}
+        <button
+          onClick={() => window.open("https://google.com", "_blank")}
+          className="w-12 h-12 rounded-full bg-red-500 text-white flex items-center justify-center 
+                     shadow-lg hover:scale-110 transition"
+        >
+          <Globe className="w-6 h-6" />
+        </button>
+
+        {/* Cloudflare */}
+        <button
+          onClick={() => window.open("https://cloudflare.com", "_blank")}
+          className="w-12 h-12 rounded-full bg-orange-500 text-white flex items-center justify-center 
+                     shadow-lg hover:scale-110 transition"
+        >
+          <Cloud className="w-6 h-6" />
+        </button>
+
+        {/* TOP 返回顶部 */}
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="w-12 h-12 rounded-full bg-purple-600 text-white flex items-center justify-center 
+                     shadow-lg hover:scale-110 transition"
+        >
+          <ChevronUp className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* 版权浮窗 */}
+      <div className="text-center py-4 text-sm text-gray-500 dark:text-gray-400">
+        © 2003–2025 LanSoo 远程技术支持
       </div>
     </div>
   );
