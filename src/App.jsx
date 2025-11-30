@@ -20,7 +20,11 @@ import {
 const banners = [
   { id: 1, img: "https://img.lansoo.com/file/1756974582770_banner3.png" },
   { id: 2, img: "https://img.lansoo.com/file/1757093612782_image.png" },
-  { id: 3, img: "https://img.lansoo.com/file/1756974574144_banner1.png" },
+  { 
+    id: 3,
+    img: "https://img.lansoo.com/file/1764529703873_PixPin_2025-12-01_03-03-16.png",
+    link: "https://bolg.lansoo.com/"
+  },
   { id: 4, img: "https://img.lansoo.com/file/1742103223415_PixPin_2025-03-16_13-33-33.png" },
   { id: 5, img: "https://img.lansoo.com/file/1757093478872_image.png" },
 ];
