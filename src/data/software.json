@@ -83,10 +83,16 @@
   ],
   "日常软件": [
      {
-      "name": "向日葵企业版",
-      "description": "SunloginEnterprise v3.2.1.44986",
+      "name": "瓦特Watt Toolkit工具箱",
+      "description": "Steam++ 现更名为 Watt Toolkit 并在 Microsoft Store 中已可用",
       "updatedAt": "2025-09-02",
-      "downloadUrl": "https://www.123865.com/s/jDqyTd-zEIpH"
+      "downloadUrl": "https://steampp.net/"
+    },
+    {
+      "name": "Steam游戏平台",
+      "description": "Steam",
+      "updatedAt": "2025-12-02",
+      "downloadUrl": "https://store.steampowered.com/"
     },
     {
       "name": "OFFICE TOOL PLUS",
