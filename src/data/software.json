@@ -1,4 +1,36 @@
 {
+    "远程软件": [
+    {
+      "name": "连连控Asklink",
+      "description": "连连控官网",
+      "updatedAt": "2025-07-10",
+      "downloadUrl": "https://www.asklink.com/"
+    },
+    {
+      "name": "UU远程",
+      "description": "网易UU远程",
+      "updatedAt": "2025-07-01",
+      "downloadUrl": "https://uuyc.163.com/"
+    }，
+    {
+      "name": "Todesk",
+      "description": "todesk官网",
+      "updatedAt": "2025-07-10",
+      "downloadUrl": "https://todesk.com/"
+    },
+    {
+      "name": "向日葵",
+      "description": "贝锐向日葵官网",
+      "updatedAt": "2025-07-10",
+      "downloadUrl": "https://sunlogin.oray.com/"
+    },
+    {
+      "name": "RUSTDESK",
+      "description": "优秀的开源远控",
+      "updatedAt": "2025-07-01",
+      "downloadUrl": "https://rustdesk.com/"
+    }
+  ],
   "系统安装": [
     {
       "name": "Win10 微软镜像",
@@ -155,10 +187,10 @@
       "downloadUrl": "https://www.123865.com/s/jDqyTd-SeIpH"
     },
     {
-      "name": "CCleaner",
-      "description": "系统清理优化工具",
-      "updatedAt": "2025-05-15",
-      "downloadUrl": "https://example.com/ccleaner.exe"
+      "name": "DirectX_Repair_增强版",
+      "description": "DirectX组件修复工具v4.4.0.36953.7z",
+      "updatedAt": "2025-12-15",
+      "downloadUrl": "https://www.123684.com/s/1QeA-tUA8v"
     },
     {
       "name": "Softcnkiller",
@@ -221,6 +253,18 @@
       "description": "在线诊断键盘测试",
       "updatedAt": "2025-07-07",
       "downloadUrl": "https://key-test.com/cn/"
+    },
+   {
+    "name": "鼠标测试",
+      "description": "在线诊断鼠标测试",
+      "updatedAt": "2025-12-07",
+      "downloadUrl": "https://www.mousetester.cn/"
+    },
+   {
+    "name": "屏幕测试",
+      "description": "在线屏幕测试",
+      "updatedAt": "2025-12-07",
+      "downloadUrl": "https://screen.bmcx.com/#welcome"
     },
     {
       "name": "CPU-Z",
@@ -293,6 +337,12 @@
       "downloadUrl": "https://ai-bot.cn/"
      }, 
    {
+      "name": "iknowwhatyoudownload",
+      "description": "你的邻居在干什么",
+      "updatedAt": "2025-04-30",
+      "downloadUrl": "https://iknowwhatyoudownload.com/"
+     }, 
+    {
       "name": "iknowwhatyoudownload",
       "description": "你的邻居在干什么",
       "updatedAt": "2025-04-30",
