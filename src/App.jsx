@@ -321,15 +321,6 @@ const App = () => {
           <Search className="w-6 h-6" />
         </button>
 
-        {/* Telegram */}
-        <button
-          onClick={() => window.open("https://t.me/sunwaychan", "_blank")}
-          className="w-12 h-12 rounded-full bg-sky-500 text-white flex items-center justify-center 
-                     shadow-lg hover:scale-110 transition"
-        >
-          <Send className="w-6 h-6" />
-        </button>
-
         {/* 收藏本站 */}
         <button
           onClick={() => alert("请按 Ctrl + D 收藏本站")}
@@ -337,6 +328,15 @@ const App = () => {
                      shadow-lg hover:scale-110 transition"
         >
           <Star className="w-6 h-6" />
+        </button>
+
+        {/* Telegram */}
+        <button
+          onClick={() => window.open("https://t.me/sunwaychan", "_blank")}
+          className="w-12 h-12 rounded-full bg-sky-500 text-white flex items-center justify-center 
+                     shadow-lg hover:scale-110 transition"
+        >
+          <Send className="w-6 h-6" />
         </button>
 
         {/* Cloudflare */}
