@@ -339,13 +339,13 @@ const App = () => {
           <Star className="w-6 h-6" />
         </button>
 
-        {/* GitHub */}
+        {/* Cloudflare */}
         <button
-          onClick={() => window.open("https://github.com", "_blank")}
-          className="w-12 h-12 rounded-full bg-gray-900 text-white flex items-center justify-center 
+          onClick={() => window.open("https://cloudflare.com", "_blank")}
+          className="w-12 h-12 rounded-full bg-orange-500 text-white flex items-center justify-center 
                      shadow-lg hover:scale-110 transition"
         >
-          <Github className="w-6 h-6" />
+          <Cloud className="w-6 h-6" />
         </button>
 
         {/* Google */}
@@ -355,15 +355,6 @@ const App = () => {
                      shadow-lg hover:scale-110 transition"
         >
           <Globe className="w-6 h-6" />
-        </button>
-
-        {/* Cloudflare */}
-        <button
-          onClick={() => window.open("https://cloudflare.com", "_blank")}
-          className="w-12 h-12 rounded-full bg-orange-500 text-white flex items-center justify-center 
-                     shadow-lg hover:scale-110 transition"
-        >
-          <Cloud className="w-6 h-6" />
         </button>
 
         {/* TOP 返回顶部 */}
