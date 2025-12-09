@@ -218,7 +218,7 @@
     },
     {
       "name": "网卡56修复",
-      "description": "修复56报错：HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{3d09c1ca-2bcc-40b7-b9bb-3f3ec143a87b}",
+      "description": "修复56报错：HKEY_LOCAL_MACHINE SOFTWARE Classes CLSID {3d09c1ca-2bcc-40b7-b9bb-3f3ec143a87b}",
       "updatedAt": "2025-12-15",
       "downloadUrl": "https://www.123865.com/s/jDqyTd-WVIpH"
     },
