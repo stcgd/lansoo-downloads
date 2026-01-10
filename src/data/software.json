@@ -246,6 +246,12 @@
       "updatedAt": "2025-11-25",
       "downloadUrl": "https://wwzr.lanzout.com/iFz8j34eejrc"
     },
+     {
+      "name": "WizTreev",
+      "description": "4.28磁盘空间分析器bknk",
+      "updatedAt": "2026-01-10",
+      "downloadUrl": "https://mefcl.lanzouw.com/b012bochi "
+    },
    {
       "name": "虚拟化环境检测修复",
       "description": "ACE虚拟化环境检测修复工具V5.0",
@@ -432,6 +438,13 @@
       "name": "DISM",
       "description": "DISM /Online /Cleanup-Image /CheckHealth ; DISM /Online /Cleanup-Image /ScanHealth ; DISM /Online /Cleanup-Image /RestoreHealth ",
       "updatedAt": "2025-04-30",
+      "downloadUrl": "https://soft.4664456.xyz"
+    },
+    {
+      "name": "win11 Nvme",
+      "description": "reg add HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Policies\Microsoft\FeatureManagement\Overrides /v 156965516 /t REG_DWORD /d 1 /f     reg add HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Policies\Microsoft\FeatureManagement\Overrides /v 1853569164 /t REG_DWORD /d 1 /f
+      reg add HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Policies\Microsoft\FeatureManagement\Overrides /v 735209102 /t REG_DWORD /d 1 /f ",
+      "updatedAt": "2026-01-10",
       "downloadUrl": "https://soft.4664456.xyz"
     },
     {
