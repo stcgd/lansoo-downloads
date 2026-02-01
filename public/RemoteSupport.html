@@ -37,14 +37,12 @@
             .flow-step { margin-bottom: 1rem; }
             .flow-step:not(:last-child)::after { content: '↓'; right: auto; bottom: -15px; top: auto; left: 45%; }
         }
-        /* 弹窗动画 */
         .modal-overlay {
             transition: opacity 0.3s ease;
         }
         .modal-content {
             transition: transform 0.3s ease;
         }
-        /* 自定义滚动条样式 */
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }
@@ -58,6 +56,22 @@
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
+        }
+        /* 声明内容排版优化 */
+        .policy-text h4 {
+            font-weight: bold;
+            color: #1e293b;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .policy-text p {
+            margin-bottom: 0.75rem;
+            color: #475569;
+            line-height: 1.6;
+            font-size: 0.875rem;
         }
     </style>
 </head>
@@ -99,7 +113,7 @@
                 </div>
                 <div class="flow-step">
                     <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold border border-blue-100">5</div>
-                    <p class="text-[10px] font-bold"故障问题解决</p>
+                    <p class="text-[10px] font-bold">故障问题解决</p>
                 </div>
                 <div class="flow-step">
                     <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold border border-blue-100">6</div>
@@ -206,17 +220,19 @@
             </section>
         </div>
 
-        <footer class="mt-12 text-center">
+        <footer class="mt-12 text-center space-y-4">
             <div class="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-full text-xs font-bold border border-red-100 shadow-sm">
                 小红书 ID: [远程技术支持]电脑故障在线服务
+            </div>
+            <div class="block">
+                <button onclick="showServicePolicy()" class="text-slate-400 text-[10px] underline hover:text-blue-500 transition-colors">查看《远程协助服务安全声明》</button>
             </div>
         </footer>
     </main>
 
-    <!-- 弹窗 (Modal) - 优化后的长图滚动方案 -->
+    <!-- 弹窗 (Modal) - 软件说明/识别码 -->
     <div id="modalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none modal-overlay">
         <div class="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl modal-content scale-95">
-            <!-- 头部固定 -->
             <div class="flex items-center justify-between p-4 border-b flex-shrink-0">
                 <h3 id="modalTitle" class="font-bold text-slate-800">软件安装说明</h3>
                 <button onclick="hideGuide()" class="p-2 hover:bg-slate-100 rounded-full transition-colors">
@@ -225,17 +241,56 @@
                     </svg>
                 </button>
             </div>
-            
-            <!-- 内容滚动区 -->
             <div class="flex-grow overflow-y-auto p-2 custom-scrollbar bg-slate-50">
                 <img id="modalImage" src="" alt="指引图片" class="w-full h-auto block rounded-lg shadow-inner">
-                <!-- 底部预留空间，确保能滚动到底部 -->
                 <div class="h-4"></div>
             </div>
-            
-            <!-- 底部固定 -->
             <div class="p-3 bg-white border-t text-center text-[10px] text-slate-400 flex-shrink-0">
                 温馨提示：您可以上下滑动图片查看完整步骤
+            </div>
+        </div>
+    </div>
+
+    <!-- 服务协议声明弹窗 (Policy Modal) -->
+    <div id="policyOverlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[100] flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none modal-overlay">
+        <div class="bg-white rounded-3xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden shadow-2xl modal-content scale-95">
+            <div class="p-6 border-b text-center flex-shrink-0">
+                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04Coverm0 0a11.955 11.955 0 00-3.042 8.618c0 5.423 3.591 10.007 8.542 11.604.497.16 1.012.24 1.518.24s1.02-.08 1.518-.24c4.95-1.597 8.542-6.181 8.542-11.604a11.955 11.955 0 00-3.042-8.618z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900">远程协助服务声明</h3>
+                <p class="text-xs text-slate-500 mt-1">为了您的设备安全与服务体验，请仔细阅读</p>
+            </div>
+            
+            <div class="flex-grow overflow-y-auto p-6 custom-scrollbar policy-text bg-slate-50/50">
+                <p class="italic text-slate-500">感谢您选择我的远程协助服务。在服务开始前，请您知悉以下内容：</p>
+
+                <h4>1. 远程服务前准备</h4>
+                <p>• 请确保设备连接稳定的网络环境。<br>• 请详尽描述需要处理的问题，比如电脑设备品牌型号、系统规格、故障发生前后进行过哪些操作及哪些软件或数据需要保留。<br>• 远程协助处理前需要您根据指引准备好设备ID识别码跟授权码，以便建立安全连接。</p>
+
+                <h4>2. 远程服务流程</h4>
+                <p>• 我们将使用向日葵、连连控或UU远程等主流专业软件操作。<br>• 过程中可选与我保持沟通（文本窗、微信实时交流）。<br>• 我会在您的视线范围内进行操作，确保您可以实时掌控每一步流程。<br>• 可能会传输并安装系统优化必要的专业工具程序。<br>• 部分情况需要您积极配合操作，您的配合程度将直接影响解决问题的速度。</p>
+
+                <h4>3. 隐私保护承诺</h4>
+                <p>• 严格遵守隐私保护政策，绝不访问或操作与服务无关的文件和数据。<br>• 服务结束后立即断开连接。您可以选择卸载远程软件，并清除所有临时文件。</p>
+
+                <h4>4. 安全须知</h4>
+                <p>• <strong>切勿</strong>在服务过程中泄露银行账户、支付密码等敏感信息。<br>• 远程无法得知隐藏硬件故障，若检测出硬件问题，我会给出维修建议。<br>• 如遇停电、断网等意外导致操作失败，敬请谅解。<br>• 对任何操作有疑问，请随时提出或终止远程服务。</p>
+
+                <h4>5. 服务确认</h4>
+                <p>在开始前我们会再次确认服务范围。服务结束后如有反馈，请及时联系以便改进。</p>
+                
+                <div class="mt-8 p-4 bg-orange-50 border border-orange-100 rounded-xl text-orange-800 text-xs font-bold text-center">
+                    请您确认以上信息，开始远程服务即表示您同意以上全部条款。
+                </div>
+            </div>
+            
+            <div class="p-6 border-t bg-white flex-shrink-0">
+                <button onclick="acceptPolicy()" class="w-full py-3.5 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 active:scale-[0.98] transition-all">
+                    我已阅读并同意，开始服务！
+                </button>
             </div>
         </div>
     </div>
@@ -246,6 +301,7 @@
     </div>
 
     <script>
+        // 复制功能
         function copyText(text) {
             const el = document.createElement('textarea');
             el.value = text;
@@ -254,6 +310,7 @@
             document.execCommand('copy');
             document.body.removeChild(el);
             const toast = document.getElementById('toast');
+            toast.innerText = "微信号已复制";
             toast.classList.add('opacity-100');
             setTimeout(() => toast.classList.remove('opacity-100'), 2000);
         }
@@ -264,18 +321,45 @@
         const modalImage = document.getElementById('modalImage');
         const scrollArea = modal.querySelector('.overflow-y-auto');
 
+        const policyOverlay = document.getElementById('policyOverlay');
+        const policyContent = policyOverlay.querySelector('.modal-content');
+
+        // 页面加载完成后自动弹出声明
+        window.onload = function() {
+            showServicePolicy();
+        };
+
+        function showServicePolicy() {
+            policyOverlay.classList.remove('pointer-events-none', 'opacity-0');
+            policyOverlay.classList.add('opacity-100');
+            policyContent.classList.remove('scale-95');
+            policyContent.classList.add('scale-100');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function acceptPolicy() {
+            policyOverlay.classList.add('opacity-0', 'pointer-events-none');
+            policyOverlay.classList.remove('opacity-100');
+            policyContent.classList.remove('scale-100');
+            policyContent.classList.add('scale-95');
+            document.body.style.overflow = '';
+            
+            // 显示同意后的反馈
+            const toast = document.getElementById('toast');
+            toast.innerText = "已同意服务声明";
+            toast.classList.add('opacity-100');
+            setTimeout(() => toast.classList.remove('opacity-100'), 2000);
+        }
+
         function showGuide(title, imageUrl) {
             modalTitle.innerText = title + ' - 识别码获取指引';
             modalImage.src = imageUrl;
-            // 打开时重置滚动位置到顶部
             scrollArea.scrollTop = 0;
             
             modal.classList.remove('pointer-events-none', 'opacity-0');
             modal.classList.add('opacity-100');
             modalContent.classList.remove('scale-95');
             modalContent.classList.add('scale-100');
-            
-            // 锁定背景滚动
             document.body.style.overflow = 'hidden';
         }
 
@@ -284,8 +368,6 @@
             modal.classList.remove('opacity-100');
             modalContent.classList.remove('scale-100');
             modalContent.classList.add('scale-95');
-            
-            // 解锁背景滚动
             document.body.style.overflow = '';
         }
 
