@@ -20,6 +20,22 @@
             font-weight: bold;
             margin-right: 12px;
         }
+        .flow-step {
+            position: relative;
+            flex: 1;
+            text-align: center;
+        }
+        .flow-step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -10%;
+            top: 20%;
+            color: #cbd5e1;
+            font-weight: bold;
+        }
+        @media (max-width: 640px) {
+            .flow-step:not(:last-child)::after { content: '↓'; right: auto; bottom: -15px; top: auto; left: 45%; }
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen">
@@ -27,7 +43,7 @@
     <!-- 顶部装饰条 -->
     <div class="h-1.5 bg-blue-600"></div>
 
-    <main class="max-w-2xl mx-auto px-4 py-12">
+    <main class="max-w-3xl mx-auto px-4 py-12">
         
         <!-- 头部信息 -->
         <header class="text-center mb-10">
@@ -36,9 +52,44 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
             </div>
-            <h1 class="text-2xl font-bold text-slate-900 mb-2">远程诊断与故障处理引导</h1>
-            <p class="text-slate-600">为了快速定位并修复您的电脑故障，请按需下载对应工具</p>
+            <h1 class="text-2xl font-bold text-slate-900 mb-2">专业远程诊断与故障处理引导</h1>
+            <p class="text-slate-600">提供免费专业远程诊断，快速修复您的电脑故障</p>
         </header>
+
+        <!-- 新增：服务流程引导图 -->
+        <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-8">
+            <h2 class="text-center text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">服务流程说明</h2>
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 sm:gap-2">
+                <div class="flow-step">
+                    <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold border border-blue-100">1</div>
+                    <p class="text-xs font-bold">联系工程师</p>
+                </div>
+                <div class="flow-step">
+                    <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold border border-blue-100">2</div>
+                    <p class="text-xs font-bold">方案诊断</p>
+                </div>
+                <div class="flow-step">
+                    <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold border border-blue-100">3</div>
+                    <p class="text-xs font-bold">下单付款</p>
+                </div>
+                <div class="flow-step">
+                    <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold border border-blue-100">4</div>
+                    <p class="text-xs font-bold">开始处理</p>
+                </div>
+                <div class="flow-step">
+                    <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold border border-blue-100">5</div>
+                    <p class="text-xs font-bold">成功解决</p>
+                </div>
+                <div class="flow-step">
+                    <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold border border-blue-100">6</div>
+                    <p class="text-xs font-bold">确认收货</p>
+                </div>
+                <div class="flow-step">
+                    <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold border border-orange-200">7</div>
+                    <p class="text-xs font-bold text-orange-600">满意评价</p>
+                </div>
+            </div>
+        </section>
 
         <!-- 引导步骤 -->
         <div class="space-y-6">
@@ -47,27 +98,51 @@
             <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div class="flex items-center mb-4">
                     <span class="step-number">1</span>
-                    <h2 class="text-lg font-semibold">联系工程师</h2>
+                    <h2 class="text-lg font-semibold">联系工程师 (免费咨询)</h2>
                 </div>
-                <p class="text-slate-600 mb-4 ml-11 text-sm leading-relaxed">
-                    在开始远程处理前，请务必先添加工程师微信。详细描述您的电脑故障，以便工程师评估诊断方案。
-                </p>
-                <div class="ml-11 p-4 bg-slate-50 rounded-xl flex items-center justify-between border border-dashed border-slate-200">
-                    <div>
-                        <p class="text-xs text-slate-500 uppercase font-semibold">工程师微信号</p>
-                        <p class="text-lg font-mono font-bold text-blue-600">qq2269404909</p>
+                <div class="ml-11">
+                    <p class="text-slate-600 mb-4 text-sm leading-relaxed">
+                        为了准确诊断定位故障，快速修复解决您的电脑问题，我们提供 <span class="text-blue-600 font-bold">免费的专业远程诊断</span>。
+                    </p>
+                    <div class="p-4 bg-slate-50 rounded-xl flex items-center justify-between border border-dashed border-slate-200">
+                        <div>
+                            <p class="text-xs text-slate-500 uppercase font-semibold">工程师微信号</p>
+                            <p class="text-lg font-mono font-bold text-blue-600">qq2269404909</p>
+                        </div>
+                        <button onclick="copyText('qq2269404909')" class="px-4 py-2 bg-white border border-slate-200 text-xs font-bold rounded-lg hover:bg-slate-100 transition-colors">
+                            复制微信号
+                        </button>
                     </div>
-                    <button onclick="copyText('qq2269404909')" class="px-4 py-2 bg-white border border-slate-200 text-xs font-bold rounded-lg hover:bg-slate-100 transition-colors">
-                        复制微信号
-                    </button>
                 </div>
+            </section>
+
+            <!-- 服务内容展示（新增） -->
+            <section class="bg-blue-600 p-6 rounded-2xl shadow-lg text-white">
+                <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    专业服务范围
+                </h3>
+                <p class="text-blue-100 text-xs mb-4">20年一线运维服务工程师1对1服务，致力解决各种电脑网络疑难！</p>
+                <ul class="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 text-sm">
+                    <li class="flex items-start gap-2">● 清理顽固流氓软件、木马病毒</li>
+                    <li class="flex items-start gap-2">● 深度清理系统无需重装</li>
+                    <li class="flex items-start gap-2">● 引导故障、卡顿、报错、蓝屏</li>
+                    <li class="flex items-start gap-2">● PIN码忘记、开机密码重置指导</li>
+                    <li class="flex items-start gap-2">● Wifi、蓝牙故障处理</li>
+                    <li class="flex items-start gap-2">● 系统账户配置启动弹窗报错</li>
+                    <li class="flex items-start gap-2">● 家庭版无损升级专业工作站版</li>
+                    <li class="flex items-start gap-2">● ACE反作弊弹窗处理</li>
+                    <li class="flex items-start gap-2">● 官方纯净系统安装指导与优化</li>
+                </ul>
             </section>
 
             <!-- 第二步 -->
             <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div class="flex items-center mb-4">
                     <span class="step-number">2</span>
-                    <h2 class="text-lg font-semibold">下载远程工具 (按地区选择)</h2>
+                    <h2 class="text-lg font-semibold">下载工具</h2>
                 </div>
                 
                 <!-- 大陆用户 -->
@@ -77,10 +152,10 @@
                         大陆国内用户专用
                     </h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <a href="https://sunlogin.oray.com/download?type=personal" target="_blank" class="flex items-center justify-center gap-2 p-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-sm font-bold transition-all">
+                        <a href="https://sunlogin.oray.com/download?type=personal" target="_blank" class="flex items-center justify-center gap-2 p-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-sm font-bold transition-all shadow-sm">
                             下载 向日葵 (推荐)
                         </a>
-                        <a href="https://www.llkong.com/" target="_blank" class="flex items-center justify-center gap-2 p-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl text-sm font-bold transition-all">
+                        <a href="https://www.llkong.com/" target="_blank" class="flex items-center justify-center gap-2 p-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl text-sm font-bold transition-all shadow-sm">
                             下载 连连控
                         </a>
                     </div>
@@ -92,7 +167,7 @@
                         <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                         海外国际用户专用
                     </h3>
-                    <a href="https://uu.163.com/remote/" target="_blank" class="flex items-center justify-center gap-2 p-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-bold transition-all w-full sm:w-1/2">
+                    <a href="https://uu.163.com/remote/" target="_blank" class="flex items-center justify-center gap-2 p-3 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-bold transition-all w-full sm:w-1/2 shadow-sm">
                         下载 网易 UU 远程
                     </a>
                 </div>
@@ -102,17 +177,17 @@
             <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div class="flex items-center mb-4">
                     <span class="step-number">3</span>
-                    <h2 class="text-lg font-semibold">提供识别码与预约</h2>
+                    <h2 class="text-lg font-semibold">提供识别码</h2>
                 </div>
                 <p class="text-slate-600 mb-4 ml-11 text-sm leading-relaxed">
-                    打开软件后，请将显示的 <strong class="text-slate-900">“识别码”</strong> 和 <strong class="text-slate-900">“验证码”</strong> 截图或发送给工程师。
+                    打开软件后，请将显示的 <strong class="text-slate-900">“识别码”</strong> 和 <strong class="text-slate-900">“验证码”</strong> 截图或发送给工程师，开始远程处理。
                 </p>
                 <div class="ml-11 bg-blue-50 p-4 rounded-xl flex items-start gap-3">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <p class="text-xs text-blue-700 leading-normal">
-                        <strong>安全提示：</strong> 远程诊断过程中您可以随时中断连接。诊断结束后请退出软件，验证码会自动失效。
+                        <strong>安全提示：</strong> 远程过程中您可以随时观察并中断连接。诊断结束退出软件后，验证码即刻失效，保障隐私安全。
                     </p>
                 </div>
             </section>
@@ -126,7 +201,7 @@
                     <span class="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span>
                     小红书 ID：[远程技术支持]电脑故障在线服务
                 </div>
-                <p class="text-slate-400 text-xs mt-4">专注解决各类电脑疑难杂症 · 诚信服务 · 价格合理</p>
+                <p class="text-slate-400 text-xs mt-4 italic font-medium">诚信服务 · 专业诊断 · 满意为止</p>
             </div>
         </footer>
 
