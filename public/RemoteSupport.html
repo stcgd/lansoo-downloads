@@ -44,6 +44,21 @@
         .modal-content {
             transition: transform 0.3s ease;
         }
+        /* 自定义滚动条样式 */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen">
@@ -64,35 +79,35 @@
 
         <!-- 服务流程引导图 -->
         <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-8">
-            <h2 class="text-center text-sm font-bold text-slate-400 uppercase tracking-widest mb-6">远程技术服务流程说明</h2>
+            <h2 class="text-center text-sm font-bold text-slate-400 uppercase tracking-widest mb-6 text-[10px] sm:text-xs">远程技术服务流程说明</h2>
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 sm:gap-2">
                 <div class="flow-step">
                     <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold border border-blue-100">1</div>
-                    <p class="text-xs font-bold">与工程师沟通故障情况</p>
+                    <p class="text-[10px] font-bold">沟通故障情况</p>
                 </div>
                 <div class="flow-step">
                     <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold border border-blue-100">2</div>
-                    <p class="text-xs font-bold">反馈诊断方案</p>
+                    <p class="text-[10px] font-bold">告知诊断方案</p>
                 </div>
                 <div class="flow-step">
                     <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold border border-blue-100">3</div>
-                    <p class="text-xs font-bold">下单付款</p>
+                    <p class="text-[10px] font-bold">下单预付款</p>
                 </div>
                 <div class="flow-step">
                     <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold border border-blue-100">4</div>
-                    <p class="text-xs font-bold">开始远程处理</p>
+                    <p class="text-[10px] font-bold">开始远程处理</p>
                 </div>
                 <div class="flow-step">
                     <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold border border-blue-100">5</div>
-                    <p class="text-xs font-bold">成功解决反馈结果</p>
+                    <p class="text-[10px] font-bold"故障问题解决</p>
                 </div>
                 <div class="flow-step">
                     <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold border border-blue-100">6</div>
-                    <p class="text-xs font-bold">确认收货</p>
+                    <p class="text-[10px] font-bold">确认收货</p>
                 </div>
                 <div class="flow-step">
                     <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-2 font-bold border border-orange-200">7</div>
-                    <p class="text-xs font-bold text-orange-600">满意评价</p>
+                    <p class="text-[10px] font-bold text-orange-600">满意评价</p>
                 </div>
             </div>
         </section>
@@ -103,7 +118,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                 </svg>
-                20年专业运维工程师1对1在线服务
+                20年专业运维工程师 1对1在线服务
             </h3>
             <ul class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm text-blue-50">
                 <li>✔ 深度清理流氓软件/木马病毒</li>
@@ -113,7 +128,7 @@
                 <li>✔ 系统无损升级专业/工作站版</li>
                 <li>✔ ACE反作弊弹窗/游戏环境修复</li>
                 <li>✔ 官方纯净系统安装与极致优化</li>
-                <li>✔ 病毒木马查杀、监听排查保护系统安全隐私</li>
+                <li>✔ 病毒查杀、监听排查 隐私安全保护</li>
             </ul>
         </section>
 
@@ -122,7 +137,7 @@
             <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div class="flex items-center mb-4">
                     <span class="step-number">1</span>
-                    <h2 class="text-lg font-semibold">添加工程师微信</h2>
+                    <h2 class="text-lg font-semibold">添加工程师微信 | 部分故障情况需远程视频指导</h2>
                 </div>
                 <div class="ml-11">
                     <div class="p-4 bg-slate-50 rounded-xl flex items-center justify-between border border-dashed border-slate-200">
@@ -144,7 +159,6 @@
                     <h2 class="text-lg font-semibold">下载并安装远程工具</h2>
                 </div>
                 <div class="ml-11 space-y-6">
-                    <!-- 国内 -->
                     <div>
                         <h4 class="text-xs font-bold text-slate-400 mb-3 uppercase tracking-tighter italic">大陆国内用户专用</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -152,7 +166,6 @@
                             <a href="https://www.asklink.com/" target="_blank" class="flex items-center justify-center p-3 bg-blue-500 text-white rounded-xl text-sm font-bold hover:bg-blue-600 transition-all">连连控</a>
                         </div>
                     </div>
-                    <!-- 海外 -->
                     <div>
                         <h4 class="text-xs font-bold text-slate-400 mb-3 uppercase tracking-tighter italic">海外国际用户专用</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -167,10 +180,10 @@
             <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div class="flex items-center mb-4">
                     <span class="step-number">3</span>
-                    <h2 class="text-lg font-semibold">查看安装说明并提供识别码</h2>
+                    <h2 class="text-lg font-semibold">获取识别码指引</h2>
                 </div>
                 <div class="ml-11">
-                    <p class="text-slate-600 mb-6 text-sm">安装完成后，请点击下方对应按钮查看如何获取识别码，并告知工程师：</p>
+                    <p class="text-slate-600 mb-6 text-sm">安装后请点击按钮查看如何找到识别码，并告知工程师：</p>
                     
                     <div class="flex flex-wrap gap-2">
                         <button onclick="showGuide('向日葵', 'https://img.lansoo.com/file/1769944166103_xiangrikui.jpg')" class="px-4 py-2 border border-orange-200 bg-orange-50 text-orange-700 rounded-lg text-xs font-bold hover:bg-orange-100 transition-colors">
@@ -186,7 +199,7 @@
 
                     <div class="mt-6 p-4 bg-blue-50 rounded-xl">
                         <p class="text-xs text-blue-700 leading-relaxed">
-                            <strong>操作指引：</strong> 软件运行后，请将界面上显示的 <span class="font-bold underline">“设备识别码”</span> 与 <span class="font-bold underline">“临时验证码”</span> 截图发送给工程师。
+                            <strong>操作提示：</strong> 软件运行后，请将显示的 <span class="font-bold underline">“设备识别码”</span> 与 <span class="font-bold underline">“验证码”</span> 告知工程师或截图。
                         </p>
                     </div>
                 </div>
@@ -195,27 +208,34 @@
 
         <footer class="mt-12 text-center">
             <div class="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-full text-xs font-bold border border-red-100 shadow-sm">
-                小红书 ID@[远程技术支持]电脑故障在线服务
+                小红书 ID: [远程技术支持]电脑故障在线服务
             </div>
         </footer>
     </main>
 
-    <!-- 弹窗 (Modal) -->
-    <div id="modalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none modal-overlay">
-        <div class="bg-white rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl modal-content scale-95">
-            <div class="flex items-center justify-between p-4 border-b">
+    <!-- 弹窗 (Modal) - 优化后的长图滚动方案 -->
+    <div id="modalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none modal-overlay">
+        <div class="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl modal-content scale-95">
+            <!-- 头部固定 -->
+            <div class="flex items-center justify-between p-4 border-b flex-shrink-0">
                 <h3 id="modalTitle" class="font-bold text-slate-800">软件安装说明</h3>
-                <button onclick="hideGuide()" class="p-2 hover:bg-slate-100 rounded-full">
+                <button onclick="hideGuide()" class="p-2 hover:bg-slate-100 rounded-full transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
-            <div class="p-2">
-                <img id="modalImage" src="" alt="指引图片" class="w-full h-auto rounded-lg">
+            
+            <!-- 内容滚动区 -->
+            <div class="flex-grow overflow-y-auto p-2 custom-scrollbar bg-slate-50">
+                <img id="modalImage" src="" alt="指引图片" class="w-full h-auto block rounded-lg shadow-inner">
+                <!-- 底部预留空间，确保能滚动到底部 -->
+                <div class="h-4"></div>
             </div>
-            <div class="p-4 bg-slate-50 text-center text-xs text-slate-500">
-                请对照图中位置，将识别码告知工程师
+            
+            <!-- 底部固定 -->
+            <div class="p-3 bg-white border-t text-center text-[10px] text-slate-400 flex-shrink-0">
+                温馨提示：您可以上下滑动图片查看完整步骤
             </div>
         </div>
     </div>
@@ -226,7 +246,6 @@
     </div>
 
     <script>
-        // 复制功能
         function copyText(text) {
             const el = document.createElement('textarea');
             el.value = text;
@@ -239,19 +258,25 @@
             setTimeout(() => toast.classList.remove('opacity-100'), 2000);
         }
 
-        // 弹窗控制
         const modal = document.getElementById('modalOverlay');
         const modalContent = modal.querySelector('.modal-content');
         const modalTitle = document.getElementById('modalTitle');
         const modalImage = document.getElementById('modalImage');
+        const scrollArea = modal.querySelector('.overflow-y-auto');
 
         function showGuide(title, imageUrl) {
             modalTitle.innerText = title + ' - 识别码获取指引';
             modalImage.src = imageUrl;
+            // 打开时重置滚动位置到顶部
+            scrollArea.scrollTop = 0;
+            
             modal.classList.remove('pointer-events-none', 'opacity-0');
             modal.classList.add('opacity-100');
             modalContent.classList.remove('scale-95');
             modalContent.classList.add('scale-100');
+            
+            // 锁定背景滚动
+            document.body.style.overflow = 'hidden';
         }
 
         function hideGuide() {
@@ -259,9 +284,11 @@
             modal.classList.remove('opacity-100');
             modalContent.classList.remove('scale-100');
             modalContent.classList.add('scale-95');
+            
+            // 解锁背景滚动
+            document.body.style.overflow = '';
         }
 
-        // 点击背景关闭
         modal.addEventListener('click', (e) => {
             if (e.target === modal) hideGuide();
         });
