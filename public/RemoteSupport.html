@@ -394,24 +394,38 @@
     else if (ua.indexOf("like Mac") != -1) os = "iOS";
     document.getElementById('v-os').innerText = os;
 
-    // 4. 位置检测 (更换为支持 HTTPS 的 API)
-    try {
-        // 使用 freeipapi.com (免费且支持 HTTPS)
-        const response = await fetch('https://freeipapi.com/api/json');
-        const res = await response.json();
-        
-        if(res && res.cityName) {
-            const country = res.countryName || '中国';
-            const city = res.cityName || '';
-            document.getElementById('v-location').innerText = `${country} · ${city}`;
-        } else {
-            document.getElementById('v-location').innerText = '接入互联网';
+    // 3. 增强版位置检测
+    const locationEl = document.getElementById('v-location');
+    
+    // 尝试多个备用 API
+    const apiSources = [
+        'https://ipapi.co/json/',
+        'https://ipwho.is/',
+        'https://freeipapi.com/api/json'
+    ];
+
+    for (let source of apiSources) {
+        try {
+            const response = await fetch(source, { timeout: 3000 });
+            if (!response.ok) continue;
+            const res = await response.json();
+            
+            // 兼容不同 API 的字段名
+            const country = res.country_name || res.country || '中国';
+            const city = res.city || res.cityName || '';
+            
+            if (city || country) {
+                locationEl.innerText = `${country} · ${city}`;
+                return; // 成功获取则停止循环
+            }
+        } catch (e) {
+            console.warn(`源 ${source} 无法访问，尝试下一个...`);
         }
-    } catch (e) {
-        console.error("定位失败:", e);
-        document.getElementById('v-location').innerText = '接入互联网';
     }
+    
+    locationEl.innerText = '接入互联网';
 }
+
 
         // 复制功能
         function copyText(text) {
